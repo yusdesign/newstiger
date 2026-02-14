@@ -310,14 +310,12 @@ function formatArticles(rawData, query) {
 }
 
 // Display search results handled by Guardian data
+// Make sure your displaySearchResults function (around line 150) looks like this:
 function displaySearchResults(articles) {
     if (!articles || articles.length === 0) {
         latestNews.innerHTML = '<div class="no-results">No articles found</div>';
         return;
     }
-    
-    const country = countrySelect.value;
-    const query = searchInput.value;
     
     let html = `<div class="results-header">
         <h2>📰 News from The Guardian</h2>
@@ -325,12 +323,12 @@ function displaySearchResults(articles) {
     </div>`;
     
     articles.forEach(article => {
-        // Handle both old and new data formats
+        // Handle both old and new formats
         const title = article.title || article.webTitle || 'No title';
         const url = article.url || article.webUrl || '#';
         const source = article.source || 'The Guardian';
         const date = article.date || article.webPublicationDate || '';
-        const country_code = article.country || 'Global';
+        const country = article.country || 'Global';
         const summary = article.summary || article.fields?.trailText || '';
         const image = article.image || article.fields?.thumbnail || '';
         const section = article.section || article.sectionName || 'News';
@@ -342,7 +340,7 @@ function displaySearchResults(articles) {
                     <h3><a href="${escapeHtml(url)}" target="_blank">${escapeHtml(title)}</a></h3>
                     <div class="news-meta">
                         <span class="source">📰 ${escapeHtml(source)}</span>
-                        <span class="country">🌍 ${escapeHtml(country_code)}</span>
+                        <span class="country">🌍 ${escapeHtml(country)}</span>
                         <span class="date">📅 ${escapeHtml(formatDate(date))}</span>
                         <span class="section">🏷️ ${escapeHtml(section)}</span>
                     </div>
