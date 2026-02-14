@@ -1,35 +1,134 @@
-# This is a basic workflow that is manually triggered
+name: 🧹 Manual News Cleanup
 
-name: Manual workflow
-
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-    # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
+      action:
+        description: 'Action to perform'
         required: true
-        # The data type of the input
+        default: 'clean'
+        type: choice
+        options:
+          - clean
+          - clean-and-fetch
+          - reset-all
+      confirm:
+        description: 'Type "YES" to confirm (destructive)'
+        required: true
+        default: ''
         type: string
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "greet"
-  greet:
-    # The type of runner that the job will run on
+  cleanup:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    permissions:
+      contents: write
+    
     steps:
-    # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ inputs.name }}"
-
-    - name: Clean folders
-      run: rm -rf news/ && mkdir -p news/search
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Verify confirmation
+        run: |
+          if [[ "${{ github.event.inputs.confirm }}" != "YES" ]]; then
+            echo "❌ Confirmation required. Type 'YES' to confirm."
+            exit 1
+          fi
+          echo "✅ Confirmation received"
+      
+      - name: Show current directory structure
+        run: |
+          echo "📁 Current news directory structure:"
+          ls -la news/ || echo "news/ directory doesn't exist yet"
+          echo ""
+          echo "📁 Search subdirectory:"
+          ls -la news/search/ || echo "news/search/ doesn't exist yet"
+      
+      - name: Clean news/search folder
+        if: github.event.inputs.action == 'clean' || github.event.inputs.action == 'clean-and-fetch'
+        run: |
+          echo "🧹 Cleaning news/search folder..."
+          
+          # Create directories if they don't exist
+          mkdir -p news/search
+          
+          # Count files before deletion
+          if [ -d "news/search" ]; then
+            file_count=$(find news/search -type f | wc -l)
+            echo "📊 Found $file_count files in news/search"
+            
+            # Remove all files in search folder
+            rm -rf news/search/*
+            rm -rf news/search/.* 2>/dev/null || true
+            
+            echo "✅ news/search folder cleaned"
+          else
+            echo "📁 news/search folder doesn't exist, creating it..."
+            mkdir -p news/search
+          fi
+      
+      - name: Clean all news folders
+        if: github.event.inputs.action == 'reset-all'
+        run: |
+          echo "🧹 RESETTING ALL news folders..."
+          
+          # Complete reset - remove and recreate
+          rm -rf news/
+          mkdir -p news/search
+          
+          # Create empty index file
+          echo '{
+            "last_update": "'$(date -Iseconds)'",
+            "status": "reset",
+            "message": "News folders have been reset"
+          }' > news/index.json
+          
+          echo "✅ All news folders reset"
+      
+      - name: Fetch fresh news
+        if: github.event.inputs.action == 'clean-and-fetch'
+        run: |
+          echo "📰 Fetching fresh news after cleanup..."
+          
+          # Set up Python
+          python -m pip install --upgrade pip
+          pip install requests
+          
+          # Run the fetcher
+          python scripts/fetch_news.py
+        env:
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          NEWS_API_TOKEN: ${{ secrets.NEWS_API_TOKEN }}
+      
+      - name: Show final directory structure
+        run: |
+          echo "📁 Final directory structure:"
+          echo ""
+          echo "news/ directory:"
+          ls -la news/
+          echo ""
+          echo "news/search/ directory:"
+          ls -la news/search/
+          echo ""
+          echo "📊 File counts:"
+          echo "Total in news/: $(find news -type f | wc -l) files"
+          echo "In search/: $(find news/search -type f | wc -l) files"
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add news/
+          
+          if ! git diff --quiet && ! git diff --staged --quiet; then
+            action_name="${{ github.event.inputs.action }}"
+            git commit -m "🧹 Manual cleanup: $action_name [skip ci]"
+            git pull --rebase origin main
+            git push
+            echo "✅ Changes committed and pushed"
+          else
+            echo "ℹ️ No changes to commit"
+          fi
