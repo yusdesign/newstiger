@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Tiger - Hourly</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Global news - Updated hourly">
+    <meta property="og:title" content="News Tiger Explorer">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yusdesign.github.io/newstiger/">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌍 GDELT News</h1>
+            <p>Global news - Updated hourly</p>
+            <div class="update-badge" id="update-badge">Last update: <span id="last-update">Loading...</span></div>
+        </header>
+
+        <main>
+            <div class="search-section">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Search news (e.g., climate, AI, Olympics...)" value="technology">
+                    <select id="country-select">
+                        <option value="">All Countries</option>
+                        <option value="RU">Russia</option>
+                        <option value="US">United States</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="CA">Canada</option>
+                        <option value="AU">Australia</option>
+                        <option value="IN">India</option>
+                        <option value="DE">Germany</option>
+                        <option value="FR">France</option>
+                        <option value="JP">Japan</option>
+                        <option value="BR">Brazil</option>
+                        <option value="ZA">South Africa</option>
+                    </select>
+                    <button id="search-btn">Search</button>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="latest">📰 Latest News</button>
+                <button class="tab-btn" data-tab="trending">📈 Trending</button>
+                <button class="tab-btn" data-tab="saved">💾 Saved Searches</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading news...</p>
+            </div>
+
+            <div class="tab-content active" id="latest-tab">
+                <h2>Latest Headlines</h2>
+                <div id="latest-news" class="news-grid"></div>
+            </div>
+
+            <div class="tab-content" id="trending-tab">
+                <h2>Trending Topics (Last 24h)</h2>
+                <div id="trending-topics" class="trending-list"></div>
+            </div>
+
+            <div class="tab-content" id="saved-tab">
+                <h2>Popular Searches</h2>
+                <div class="saved-searches">
+                    <button class="saved-search" data-query="technology">💻 Technology</button>
+                    <button class="saved-search" data-query="climate change">🌍 Climate</button>
+                    <button class="saved-search" data-query="sports">⚽ Sports</button>
+                    <button class="saved-search" data-query="business">📊 Business</button>
+                    <button class="saved-search" data-query="health">🏥 Health</button>
+                    <button class="saved-search" data-query="science">🔬 Science</button>
+                </div>
+                <div id="saved-results" class="news-grid"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by <a href="https://www.gdeltproject.org/" target="_blank">GDELT Project</a> | 
+            Updated hourly via GitHub Actions | 
+            <a href="https://github.com/yusdesign/newstiger" target="_blank">Source</a></p>
+        </footer>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
