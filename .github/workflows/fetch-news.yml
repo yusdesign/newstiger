@@ -1,10 +1,14 @@
-name: Fetch News
+name: Fetch Guardian News
 
 on:
   schedule:
-    # Run every 2 hours - Guardian has no limits!
+    # Run every 2 hours - Guardian has no limits
     - cron: '0 */2 * * *'
   workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/fetch_news.py'
 
 jobs:
   fetch-news:
@@ -13,7 +17,8 @@ jobs:
       contents: write
     
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       
@@ -25,11 +30,16 @@ jobs:
       - name: Install dependencies
         run: pip install requests
       
-      - name: Fetch news from Guardian (primary) and NewsAPI (backup)
+      - name: Clean old GDELT files
+        run: |
+          rm -rf news/
+          mkdir -p news/search
+          echo "{}" > news/index.json
+      
+      - name: Fetch fresh news from Guardian
         run: python scripts/fetch_news.py
         env:
           GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
-          NEWS_API_TOKEN: ${{ secrets.NEWS_API_TOKEN }}
       
       - name: Commit and push
         run: |
@@ -37,7 +47,9 @@ jobs:
           git config --local user.name "GitHub Action"
           git add news/
           if ! git diff --quiet && ! git diff --staged --quiet; then
-            git commit -m "Update news [skip ci]"
+            git commit -m "Update Guardian news [skip ci]"
             git pull --rebase origin main
             git push
+          else
+            echo "No changes to commit"
           fi
