@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-02-14T08:47:24.538562",
+  "last_update": "2026-02-14T09:25:57.335193",
   "searches": 10,
   "files": {
     "latest": "latest.json",
@@ -8,12 +8,12 @@
       "search/climate_change.json",
       "search/artificial_intelligence.json",
       "search/business.json",
-      "search/health_US.json",
+      "search/health_RU.json",
       "search/sports.json",
-      "search/election_US.json",
-      "search/technology_US.json",
-      "search/technology_GB.json",
-      "search/technology_IN.json"
+      "search/election_RU.json",
+      "search/technology_RU.json",
+      "search/technology_RU.json",
+      "search/technology_RU.json"
     ]
   }
 }
