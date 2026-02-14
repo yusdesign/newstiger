@@ -3,37 +3,14 @@
   "total": 3,
   "articles": [
     {
-      "title": "Welcome to NewsTiger",
-      "url": "https://theguardian.com",
+      "title": "Global News Update",
+      "url": "https://www.theguardian.com",
       "source": "The Guardian",
-      "date": "$(date '+%Y-%m-%d %H:%M')",
+      "date": "$(date '+%Y-%m-%d')",
       "country": "Global",
-      "section": "Welcome",
-      "summary": "NewsTiger now uses The Guardian API for reliable, unlimited news.",
+      "summary": "Latest headlines from around the world.",
       "image": "",
-      "api": "guardian"
-    },
-    {
-      "title": "Russia News Available",
-      "url": "https://theguardian.com/world/russia",
-      "source": "The Guardian",
-      "date": "$(date '+%Y-%m-%d %H:%M')",
-      "country": "RU",
-      "section": "World",
-      "summary": "Get the latest news about Russia from The Guardian.",
-      "image": "",
-      "api": "guardian"
-    },
-    {
-      "title": "Technology Updates",
-      "url": "https://theguardian.com/technology",
-      "source": "The Guardian",
-      "date": "$(date '+%Y-%m-%d %H:%M')",
-      "country": "Global",
-      "section": "Technology",
-      "summary": "Latest technology news and updates.",
-      "image": "",
-      "api": "guardian"
+      "section": "News"
     }
   ],
   "api": "Guardian"
