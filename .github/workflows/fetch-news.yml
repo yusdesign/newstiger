@@ -1,27 +1,21 @@
-name: Fetch GDELT News
+name: Fetch News
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    # Run every 2 hours - Guardian has no limits!
+    - cron: '0 */2 * * *'
   workflow_dispatch:
-  push:
-    branches: [ main ]
-    paths:
-      - 'scripts/fetch_news.py'
 
 jobs:
   fetch-news:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
-      
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -29,92 +23,21 @@ jobs:
           python-version: '3.10'
       
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests
+        run: pip install requests
       
-      - name: Create news directories
-        run: |
-          mkdir -p news/search
-          echo "{}" > news/index.json
+      - name: Fetch news from Guardian (primary) and NewsAPI (backup)
+        run: python scripts/fetch_news.py
+        env:
+          GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
+          NEWS_API_TOKEN: ${{ secrets.NEWS_API_TOKEN }}
       
-      - name: Fetch GDELT news
+      - name: Commit and push
         run: |
-          python scripts/fetch_news.py || python scripts/create_fallback_data.py
-        continue-on-error: true
-      
-      - name: Check for changes
-        id: check_changes
-        run: |
-          git add news/
-          if git diff --quiet && git diff --staged --quiet; then
-            echo "No changes to commit"
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "Changes detected"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
-      
-      - name: Commit and push with conflict resolution
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          # Configure git
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
-          # Commit local changes
-          git commit -m "Update GDELT news [skip ci]"
-          
-          # Function to push with retry
-          push_with_retry() {
-            local max_retries=5
-            local retry_count=0
-            
-            while [ $retry_count -lt $max_retries ]; do
-              echo "Push attempt $((retry_count+1)) of $max_retries"
-              
-              # Try to pull with rebase
-              if git pull --rebase origin main; then
-                # Try to push
-                if git push origin main; then
-                  echo "Push successful!"
-                  return 0
-                fi
-              fi
-              
-              # If we get here, both pull and push failed
-              retry_count=$((retry_count+1))
-              
-              if [ $retry_count -lt $max_retries ]; then
-                # Exponential backoff with jitter
-                wait_time=$(( (2 ** retry_count) * 10 + RANDOM % 30 ))
-                echo "Push failed, waiting ${wait_time}s before retry..."
-                sleep $wait_time
-                
-                # Fetch latest changes
-                git fetch origin
-                git reset --hard origin/main
-                
-                # Re-apply our changes
-                git add news/
-                git commit -m "Update GDELT news [skip ci]"
-              fi
-            done
-            
-            echo "All push attempts failed"
-            return 1
-          }
-          
-          # Execute push with retry
-          push_with_retry
-      
-      - name: Create Pull Request if push fails (last resort)
-        if: failure() && steps.check_changes.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update GDELT news [skip ci]"
-          title: "Automated GDELT News Update"
-          body: "This PR contains the latest GDELT news data."
-          branch: "gdelt-update-${{ github.run_id }}"
-          delete-branch: true
+          git add news/
+          if ! git diff --quiet && ! git diff --staged --quiet; then
+            git commit -m "Update news [skip ci]"
+            git pull --rebase origin main
+            git push
+          fi
