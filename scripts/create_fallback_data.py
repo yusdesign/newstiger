@@ -4,6 +4,11 @@ import json
 import random
 from datetime import datetime, timedelta
 from pathlib import Path
+import time
+
+print(f"\n{'='*50}")
+print(f"Creating fallback data at {datetime.now()}")
+print(f"{'='*50}\n")
 
 output_dir = Path("news")
 output_dir.mkdir(exist_ok=True)
@@ -13,6 +18,7 @@ search_dir.mkdir(exist_ok=True)
 timestamp = datetime.now().isoformat()
 
 # Create trending.json with mock data
+print("📈 Creating trending.json...")
 trending = {
     'timestamp': timestamp,
     'trends': [
@@ -27,9 +33,10 @@ trending = {
 
 with open(output_dir / 'trending.json', 'w') as f:
     json.dump(trending, f, indent=2)
-print("✅ Created fallback trending.json")
+print("  ✅ trending.json created")
 
 # Create latest.json with sample articles
+print("📰 Creating latest.json...")
 latest = {
     'timestamp': timestamp,
     'total': 5,
@@ -49,10 +56,11 @@ latest = {
 
 with open(output_dir / 'latest.json', 'w') as f:
     json.dump(latest, f, indent=2)
-print("✅ Created fallback latest.json")
+print("  ✅ latest.json created")
 
-# Create some country-specific fallback files
-countries = ['RU', 'UA', 'US', 'GB', 'DE', 'FR']
+# Create essential country files
+print("🌍 Creating country files...")
+countries = ['RU', 'UA', 'US', 'GB', 'DE', 'FR', 'CN', 'JP', 'IN', 'BR']
 for country in countries:
     filename = f"russia_{country.lower()}.json" if country == 'RU' else f"{country.lower()}.json"
     
@@ -75,6 +83,6 @@ for country in countries:
     
     with open(search_dir / filename, 'w') as f:
         json.dump(data, f, indent=2)
-    print(f"✅ Created fallback {filename}")
+    print(f"  ✅ {filename}")
 
 print("\n🎉 All fallback data created successfully!")
