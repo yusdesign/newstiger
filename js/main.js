@@ -103,49 +103,71 @@ async function searchNews() {
     updateURL(query, country);
     
     try {
-        // Map queries to actual filenames that exist
-        let filename;
+        // Map queries to correct file paths
+        let filePath;
         const lowerQuery = query.toLowerCase();
         
+        // Country-specific searches
         if (lowerQuery.includes('russia') || country === 'RU') {
-            filename = 'news/search/russia.json';
+            filePath = 'news/search/russia.json';
         } else if (lowerQuery.includes('ukraine') || country === 'UA') {
-            filename = 'news/search/ukraine.json';
+            filePath = 'news/search/ukraine.json';
         } else if (lowerQuery.includes('us') || country === 'US') {
-            filename = 'news/search/us.json';
+            filePath = 'news/search/us.json';
         } else if (lowerQuery.includes('uk') || country === 'GB') {
-            filename = 'news/search/gb.json';
-        } else if (lowerQuery.includes('technology')) {
-            filename = 'news/search/technology.json';
-        } else if (lowerQuery.includes('climate')) {
-            filename = 'news/search/climate_change.json';
+            filePath = 'news/search/gb.json';
+        } else if (lowerQuery.includes('germany') || country === 'DE') {
+            filePath = 'news/search/germany.json';
+        } else if (lowerQuery.includes('france') || country === 'FR') {
+            filePath = 'news/search/france.json';
+        } 
+        // Topic searches
+        else if (lowerQuery.includes('technology')) {
+            filePath = 'news/search/technology.json';
+        } else if (lowerQuery.includes('climate') || lowerQuery.includes('environment')) {
+            filePath = 'news/search/climate_change.json';
         } else if (lowerQuery.includes('business')) {
-            filename = 'news/search/business.json';
-        } else if (lowerQuery.includes('sports')) {
-            filename = 'news/search/sports.json';
+            filePath = 'news/search/business.json';
+        } else if (lowerQuery.includes('sport')) {
+            filePath = 'news/search/sport.json';
+        } else if (lowerQuery.includes('science')) {
+            filePath = 'news/search/science.json';
         } else if (lowerQuery.includes('politics')) {
-            filename = 'news/search/politics.json';
+            filePath = 'news/search/politics.json';
+        } else if (lowerQuery.includes('health')) {
+            filePath = 'news/search/health.json';
+        } else if (lowerQuery.includes('education')) {
+            filePath = 'news/search/education.json';
+        } else if (lowerQuery.includes('economy')) {
+            filePath = 'news/search/economy.json';
+        } else if (lowerQuery.includes('covid')) {
+            filePath = 'news/search/covid.json';
         } else {
-            // Default to latest.json
-            filename = 'news/latest.json';
+            // Default to latest.json in the main news folder
+            filePath = 'news/latest.json';
         }
         
-        console.log('📁 Loading:', filename);
-        const response = await fetch(filename + '?t=' + Date.now());
+        console.log('📁 Loading:', filePath);
+        
+        // Add cache-busting timestamp
+        const response = await fetch(filePath + '?t=' + Date.now());
         
         if (response.ok) {
             const data = await response.json();
+            console.log(`✅ Loaded ${data.articles.length} articles`);
+            
             if (data.articles && data.articles.length > 0) {
                 displayArticles(data.articles, query);
             } else {
                 loadFallbackNews(query);
             }
         } else {
-            // If specific file fails, try latest.json
-            const latestResponse = await fetch('news/latest.json?t=' + Date.now());
-            if (latestResponse.ok) {
-                const latestData = await latestResponse.json();
-                displayArticles(latestData.articles.slice(0, 10), query);
+            console.log('❌ File not found, trying latest.json');
+            // Try latest.json as fallback
+            const fallbackResponse = await fetch('news/latest.json?t=' + Date.now());
+            if (fallbackResponse.ok) {
+                const fallbackData = await fallbackResponse.json();
+                displayArticles(fallbackData.articles.slice(0, 10), query);
             } else {
                 loadFallbackNews(query);
             }
