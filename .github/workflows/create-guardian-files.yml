@@ -1,0 +1,76 @@
+name: 📰 Create Guardian News Files
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create Guardian news files
+        run: |
+          mkdir -p news/search
+          
+          # Create Russia news file
+          cat > news/search/russia.json << 'EOF'
+          {
+            "timestamp": "$(date -Iseconds)",
+            "total": 5,
+            "articles": [
+              {
+                "title": "Russia: Latest political developments",
+                "url": "https://www.theguardian.com/world/russia",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d')",
+                "country": "RU",
+                "summary": "Latest news and analysis from Russia.",
+                "image": "",
+                "section": "World"
+              }
+            ],
+            "api": "Guardian"
+          }
+          EOF
+          
+          # Create latest.json
+          cat > news/latest.json << 'EOF'
+          {
+            "timestamp": "$(date -Iseconds)",
+            "total": 3,
+            "articles": [
+              {
+                "title": "Global News Update",
+                "url": "https://www.theguardian.com",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d')",
+                "country": "Global",
+                "summary": "Latest headlines from around the world.",
+                "image": "",
+                "section": "News"
+              }
+            ],
+            "api": "Guardian"
+          }
+          EOF
+          
+          # Create trending.json
+          cat > news/trending.json << 'EOF'
+          {
+            "timestamp": "$(date -Iseconds)",
+            "trends": [
+              {"rank": 1, "title": "Top Stories", "section": "News"}
+            ]
+          }
+          EOF
+          
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add news/
+          git commit -m "📰 Create Guardian news files" || true
+          git push
