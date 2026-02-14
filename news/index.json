@@ -1,1 +1,30 @@
-{}
+{
+  "last_update": "2026-02-14T15:56:38.182418",
+  "stats": {
+    "guardian_calls": 18,
+    "newsapi_calls": 16,
+    "cache_hits": 0,
+    "errors": 18
+  },
+  "countries": [
+    "RU",
+    "UA",
+    "US",
+    "GB",
+    "DE",
+    "FR",
+    "JP",
+    "IN",
+    "CN",
+    "BR"
+  ],
+  "searches": [
+    "technology",
+    "artificial intelligence",
+    "climate change",
+    "business",
+    "sports",
+    "health",
+    "science"
+  ]
+}
