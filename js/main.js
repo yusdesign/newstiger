@@ -1,202 +1,90 @@
 // ============================================
-// NEWSTIGER - Guardian News Only
-// Complete rewrite - no GDELT references
+// NEWSTIGER - Прямой доступ к Guardian API
 // ============================================
 
-// State
-let currentQuery = 'news';
-let currentCountry = '';
-let allArticles = [];
+const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzWJQgx0LxgZqg9Bqzj9vZjXQxKk0nKk0nKk0n/exec'; // Мы создадим прокси
 
-// DOM Elements
+let currentQuery = '';
+let currentCountry = '';
+
+// DOM элементы
 const searchInput = document.getElementById('search-input');
 const countrySelect = document.getElementById('country-select');
 const searchBtn = document.getElementById('search-btn');
 const loading = document.getElementById('loading');
-const lastUpdate = document.getElementById('last-update');
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
 const latestNews = document.getElementById('latest-news');
 const trendingTopics = document.getElementById('trending-topics');
-const savedResults = document.getElementById('saved-results');
 
-// ============================================
-// INITIALIZATION
-// ============================================
-
+// Инициализация
 async function init() {
     console.log('🚀 NewsTiger starting...');
-    
-    // Load saved preferences
-    loadPreferences();
-    
-    // Check URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlQuery = urlParams.get('q');
-    const urlCountry = urlParams.get('country');
-    
-    if (urlQuery) {
-        searchInput.value = urlQuery;
-        if (urlCountry) {
-            countrySelect.value = urlCountry;
-            currentCountry = urlCountry;
-        }
-        await searchNews();
-    } else {
-        // Load default news
-        await loadLatestNews();
-    }
-    
-    // Load trending data
-    await loadTrending();
-    
-    // Setup event listeners
+    await loadLatest();
     setupEventListeners();
-    
-    // Update timestamp
-    updateTimestamp();
-    
-    console.log('✅ NewsTiger ready');
 }
 
-// ============================================
-// NEWS LOADING FUNCTIONS
-// ============================================
-
-async function loadLatestNews() {
+// Загрузка последних новостей
+async function loadLatest() {
     showLoading();
-    
     try {
-        // Try to load from latest.json
-        const response = await fetch('news/latest.json?t=' + Date.now());
-        
-        if (!response.ok) {
-            throw new Error('Latest news not found');
-        }
-        
+        const response = await fetch('https://content.guardianapis.com/search?page-size=20&show-fields=headline,trailText,thumbnail&api-key=1f962fc0-b843-4a63-acb9-770f4c24a86e');
         const data = await response.json();
         
-        if (data.articles && data.articles.length > 0) {
-            allArticles = data.articles;
-            displayArticles(allArticles, 'Latest News');
-        } else {
-            // No articles, load fallback
-            loadFallbackNews();
-        }
+        const articles = data.response.results.map(formatArticle);
+        displayArticles(articles, 'Latest News');
     } catch (error) {
-        console.log('Latest news error:', error);
-        loadFallbackNews();
+        console.error('Error loading latest:', error);
+        showError('Failed to load news');
     } finally {
         hideLoading();
     }
 }
 
+// Поиск новостей
 async function searchNews() {
+    const query = searchInput.value.trim();
+    if (!query) {
+        await loadLatest();
+        return;
+    }
+    
     showLoading();
     
-    const query = searchInput.value.trim() || 'news';
-    const country = countrySelect.value;
-    
-    currentQuery = query;
-    currentCountry = country;
-    
-    updateURL(query, country);
-    
     try {
-        // Map queries to correct file paths
-        let filePath;
-        const lowerQuery = query.toLowerCase();
+        const url = `https://content.guardianapis.com/search?q=${encodeURIComponent(query)}&page-size=20&show-fields=headline,trailText,thumbnail&api-key=1f962fc0-b843-4a63-acb9-770f4c24a86e`;
         
-        // Country-specific searches
-        if (lowerQuery.includes('russia') || country === 'RU') {
-            filePath = 'news/search/russia.json';
-        } else if (lowerQuery.includes('ukraine') || country === 'UA') {
-            filePath = 'news/search/ukraine.json';
-        } else if (lowerQuery.includes('us') || country === 'US') {
-            filePath = 'news/search/us.json';
-        } else if (lowerQuery.includes('uk') || country === 'GB') {
-            filePath = 'news/search/gb.json';
-        } else if (lowerQuery.includes('germany') || country === 'DE') {
-            filePath = 'news/search/germany.json';
-        } else if (lowerQuery.includes('france') || country === 'FR') {
-            filePath = 'news/search/france.json';
-        } 
-        // Topic searches
-        else if (lowerQuery.includes('technology')) {
-            filePath = 'news/search/technology.json';
-        } else if (lowerQuery.includes('climate') || lowerQuery.includes('environment')) {
-            filePath = 'news/search/climate_change.json';
-        } else if (lowerQuery.includes('business')) {
-            filePath = 'news/search/business.json';
-        } else if (lowerQuery.includes('sport')) {
-            filePath = 'news/search/sport.json';
-        } else if (lowerQuery.includes('science')) {
-            filePath = 'news/search/science.json';
-        } else if (lowerQuery.includes('politics')) {
-            filePath = 'news/search/politics.json';
-        } else if (lowerQuery.includes('health')) {
-            filePath = 'news/search/health.json';
-        } else if (lowerQuery.includes('education')) {
-            filePath = 'news/search/education.json';
-        } else if (lowerQuery.includes('economy')) {
-            filePath = 'news/search/economy.json';
-        } else if (lowerQuery.includes('covid')) {
-            filePath = 'news/search/covid.json';
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (data.response && data.response.results) {
+            const articles = data.response.results.map(formatArticle);
+            displayArticles(articles, `Search: ${query}`);
         } else {
-            // Default to latest.json in the main news folder
-            filePath = 'news/latest.json';
-        }
-        
-        console.log('📁 Loading:', filePath);
-        
-        // Add cache-busting timestamp
-        const response = await fetch(filePath + '?t=' + Date.now());
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log(`✅ Loaded ${data.articles.length} articles`);
-            
-            if (data.articles && data.articles.length > 0) {
-                displayArticles(data.articles, query);
-            } else {
-                loadFallbackNews(query);
-            }
-        } else {
-            console.log('❌ File not found, trying latest.json');
-            // Try latest.json as fallback
-            const fallbackResponse = await fetch('news/latest.json?t=' + Date.now());
-            if (fallbackResponse.ok) {
-                const fallbackData = await fallbackResponse.json();
-                displayArticles(fallbackData.articles.slice(0, 10), query);
-            } else {
-                loadFallbackNews(query);
-            }
+            showError('No results found');
         }
     } catch (error) {
         console.error('Search error:', error);
-        loadFallbackNews(query);
+        showError('Search failed');
     } finally {
         hideLoading();
     }
 }
 
-async function loadTrending() {
-    try {
-        const response = await fetch('news/trending.json?t=' + Date.now());
-        
-        if (response.ok) {
-            const data = await response.json();
-            displayTrending(data.trends || []);
-        }
-    } catch (error) {
-        console.log('Trending error:', error);
-    }
+// Форматирование статьи из Guardian API
+function formatArticle(result) {
+    const fields = result.fields || {};
+    return {
+        title: fields.headline || result.webTitle || 'No title',
+        url: result.webUrl || '#',
+        source: 'The Guardian',
+        date: formatDate(result.webPublicationDate),
+        country: sectionToCountry(result.sectionId),
+        section: result.sectionName || 'News',
+        summary: (fields.trailText || '').replace(/<[^>]*>/g, '').substring(0, 200) + '...',
+        image: fields.thumbnail || ''
+    };
 }
 
-// ============================================
-// DISPLAY FUNCTIONS
-// ============================================
-
+// Отображение статей
 function displayArticles(articles, title) {
     if (!articles || articles.length === 0) {
         latestNews.innerHTML = '<div class="no-results">No articles found</div>';
@@ -208,45 +96,19 @@ function displayArticles(articles, title) {
         <p class="results-count">${articles.length} articles from The Guardian</p>
     </div>`;
     
-    articles.slice(0, 15).forEach(article => {
-        const articleTitle = article.title || 'No title';
-        const articleUrl = article.url || '#';
-        const articleSource = article.source || 'The Guardian';
-        const articleDate = formatDate(article.date || '');
-        const articleCountry = article.country || 'Global';
-        const articleSummary = (article.summary || '').substring(0, 200);
-        const articleImage = article.image || '';
-        const articleSection = article.section || 'News';
-        
+    articles.forEach(article => {
         html += `
             <div class="news-card">
-                ${articleImage ? `
-                    <img src="${escapeHtml(articleImage)}" 
-                         alt="${escapeHtml(articleTitle)}" 
-                         class="news-thumbnail"
-                         onerror="this.style.display='none'">
-                ` : ''}
+                ${article.image ? `<img src="${escapeHtml(article.image)}" class="news-thumbnail" onerror="this.style.display='none'">` : ''}
                 <div class="news-content">
-                    <h3>
-                        <a href="${escapeHtml(articleUrl)}" target="_blank" rel="noopener">
-                            ${escapeHtml(articleTitle)}
-                        </a>
-                    </h3>
+                    <h3><a href="${escapeHtml(article.url)}" target="_blank">${escapeHtml(article.title)}</a></h3>
                     <div class="news-meta">
-                        <span class="source">📰 ${escapeHtml(articleSource)}</span>
-                        <span class="country">🌍 ${escapeHtml(articleCountry)}</span>
-                        <span class="date">📅 ${escapeHtml(articleDate)}</span>
-                        <span class="section">🏷️ ${escapeHtml(articleSection)}</span>
+                        <span class="source">📰 ${escapeHtml(article.source)}</span>
+                        <span class="country">🌍 ${escapeHtml(article.country)}</span>
+                        <span class="date">📅 ${escapeHtml(article.date)}</span>
                     </div>
-                    <p class="summary">${escapeHtml(articleSummary)}...</p>
-                    <div class="news-actions">
-                        <a href="${escapeHtml(articleUrl)}" 
-                           target="_blank" 
-                           rel="noopener"
-                           class="read-more-btn">
-                            📖 Read on Guardian
-                        </a>
-                    </div>
+                    <p class="summary">${escapeHtml(article.summary)}</p>
+                    <a href="${escapeHtml(article.url)}" target="_blank" class="read-more-btn">Read on Guardian</a>
                 </div>
             </div>
         `;
@@ -255,93 +117,22 @@ function displayArticles(articles, title) {
     latestNews.innerHTML = html;
 }
 
-function displayTrending(trends) {
-    if (!trends || trends.length === 0) {
-        if (trendingTopics) {
-            trendingTopics.innerHTML = '<div class="no-results">No trending topics</div>';
-        }
-        return;
-    }
-    
-    let html = '<div class="trending-list">';
-    trends.slice(0, 10).forEach((trend, index) => {
-        const title = trend.title || `Topic ${index + 1}`;
-        const section = trend.section || 'News';
-        const date = trend.date || '';
-        
-        html += `
-            <div class="trend-item" onclick="searchTrend('${escapeHtml(title)}')">
-                <span class="trend-rank">#${index + 1}</span>
-                <span class="trend-title">${escapeHtml(title)}</span>
-                <span class="trend-section">${escapeHtml(section)}</span>
-                <span class="trend-date">${escapeHtml(date)}</span>
-            </div>
-        `;
-    });
-    html += '</div>';
-    
-    if (trendingTopics) {
-        trendingTopics.innerHTML = html;
-    }
+// Вспомогательные функции
+function sectionToCountry(section) {
+    const map = {
+        'us-news': 'US', 'uk-news': 'GB', 'australia-news': 'AU',
+        'world/russia': 'RU', 'world/ukraine': 'UA', 'world/germany': 'DE',
+        'world/france': 'FR', 'world/japan': 'JP', 'world/india': 'IN',
+        'world/china': 'CN'
+    };
+    return map[section] || 'Global';
 }
-
-// ============================================
-// FALLBACK FUNCTIONS
-// ============================================
-
-function loadFallbackNews(query = 'news') {
-    const fallbackArticles = [
-        {
-            title: `Latest news about ${query}`,
-            url: 'https://www.theguardian.com',
-            source: 'The Guardian',
-            date: new Date().toLocaleDateString(),
-            country: 'Global',
-            summary: `Stay informed with the latest developments in ${query}. Our news updates are coming soon.`,
-            image: '',
-            section: 'News'
-        },
-        {
-            title: `${query} - Today's headlines`,
-            url: 'https://www.theguardian.com',
-            source: 'The Guardian',
-            date: new Date().toLocaleDateString(),
-            country: 'Global',
-            summary: `Breaking news and analysis about ${query} from around the world.`,
-            image: '',
-            section: 'World'
-        },
-        {
-            title: `What's new in ${query}`,
-            url: 'https://www.theguardian.com',
-            source: 'The Guardian',
-            date: new Date().toLocaleDateString(),
-            country: 'Global',
-            summary: `The latest updates and stories about ${query} from The Guardian.`,
-            image: '',
-            section: 'Updates'
-        }
-    ];
-    
-    displayArticles(fallbackArticles, query);
-    showMessage('Showing sample data - fresh news loading soon', 'info');
-}
-
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
 
 function formatDate(dateStr) {
     if (!dateStr) return 'Unknown';
-    
     try {
-        // Handle ISO format
-        if (dateStr.includes('T')) {
-            const date = new Date(dateStr);
-            return date.toLocaleDateString() + ' ' + 
-                   date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        }
-        return dateStr;
+        const d = new Date(dateStr);
+        return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     } catch {
         return dateStr;
     }
@@ -354,134 +145,28 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-function updateURL(query, country) {
-    const url = new URL(window.location);
-    url.searchParams.set('q', query);
-    if (country) {
-        url.searchParams.set('country', country);
-    } else {
-        url.searchParams.delete('country');
-    }
-    window.history.pushState({}, '', url);
-}
-
-function loadPreferences() {
-    const savedLang = localStorage.getItem('preferred_language');
-    if (savedLang) {
-        document.querySelectorAll('.translation-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.lang === savedLang);
-        });
-    }
-}
-
 function showLoading() {
-    if (loading) {
-        loading.style.display = 'flex';
-    }
+    if (loading) loading.style.display = 'flex';
 }
 
 function hideLoading() {
-    if (loading) {
-        loading.style.display = 'none';
-    }
+    if (loading) loading.style.display = 'none';
 }
 
-function showMessage(text, type = 'info') {
+function showError(msg) {
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = text;
+    toast.className = 'toast error';
+    toast.textContent = msg;
     document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.classList.add('fade-out');
-        setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    setTimeout(() => toast.remove(), 3000);
 }
-
-function updateTimestamp() {
-    if (lastUpdate) {
-        const now = new Date();
-        lastUpdate.textContent = now.toLocaleString();
-    }
-}
-
-// Global function for trend clicks
-window.searchTrend = function(title) {
-    searchInput.value = title;
-    searchNews();
-};
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
 
 function setupEventListeners() {
-    // Search button
-    if (searchBtn) {
-        searchBtn.addEventListener('click', searchNews);
-    }
-    
-    // Enter key
-    if (searchInput) {
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') searchNews();
-        });
-    }
-    
-    // Tab switching
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            btn.classList.add('active');
-            const tabId = btn.getAttribute('data-tab');
-            const tabElement = document.getElementById(`${tabId}-tab`);
-            if (tabElement) {
-                tabElement.classList.add('active');
-            }
-        });
-    });
-    
-    // Country select
-    if (countrySelect) {
-        countrySelect.addEventListener('change', () => {
-            if (searchInput.value.trim()) {
-                searchNews();
-            }
-        });
-    }
-    
-    // Preset buttons
-    document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const query = btn.dataset.query;
-            const country = btn.dataset.country;
-            if (query) {
-                searchInput.value = query;
-                if (country) {
-                    countrySelect.value = country;
-                }
-                searchNews();
-            }
-        });
-    });
-    
-    // Translation buttons
-    document.querySelectorAll('.translation-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.translation-btn').forEach(b => 
-                b.classList.remove('active')
-            );
-            btn.classList.add('active');
-            localStorage.setItem('preferred_language', btn.dataset.lang);
-            showMessage(`Language: ${btn.textContent.trim()}`);
-        });
+    searchBtn?.addEventListener('click', searchNews);
+    searchInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchNews();
     });
 }
 
-// ============================================
-// START THE APP
-// ============================================
-
+// Запуск
 document.addEventListener('DOMContentLoaded', init);
