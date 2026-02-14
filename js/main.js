@@ -310,7 +310,6 @@ function formatArticles(rawData, query) {
 }
 
 // Display search results handled by Guardian data
-// Make sure your displaySearchResults function (around line 150) looks like this:
 function displaySearchResults(articles) {
     if (!articles || articles.length === 0) {
         latestNews.innerHTML = '<div class="no-results">No articles found</div>';
