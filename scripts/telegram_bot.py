@@ -47,8 +47,8 @@ class GDELTNewsBot:
         # Translation API
         self.translate_api = "https://libretranslate.de/translate"
         
-    def fetch_news(self, query, country=None, max_records=5):
-        """Fetch news from GDELT"""
+    def fetch_news(self, query, country=None, max_records=5, retry=3):
+        """Fetch news from GDELT with retry logic"""
         params = {
             'query': query,
             'mode': 'artlist',
@@ -62,17 +62,30 @@ class GDELTNewsBot:
         
         logger.info(f"Fetching news for: {query} (country: {country})")
         
-        try:
-            response = requests.get(self.gdelt_api, params=params, timeout=15)
-            if response.status_code == 200:
-                data = response.json()
-                return self._format_articles(data, query)
-            else:
-                logger.error(f"GDELT API error: {response.status_code}")
-                return None
-        except Exception as e:
-            logger.error(f"Error fetching news: {e}")
-            return None
+        for attempt in range(retry):
+            try:
+                response = requests.get(self.gdelt_api, params=params, timeout=15)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    return self._format_articles(data, query)
+                elif response.status_code == 429:
+                    wait_time = (2 ** attempt) * 5  # 5, 10, 20 seconds
+                    logger.warning(f"Rate limited (429). Waiting {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"GDELT API error: {response.status_code}")
+                    return None
+                    
+            except Exception as e:
+                logger.error(f"Error fetching news (attempt {attempt+1}): {e}")
+                if attempt < retry - 1:
+                    time.sleep(2 ** attempt * 2)
+                else:
+                    return None
+        
+        return None
     
     def fetch_trending(self, hours=24):
         """Fetch trending topics"""
