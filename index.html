@@ -3,90 +3,710 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>News Tiger - Hourly</title>
-    <link rel="stylesheet" href="css/style.css">
-    <meta name="description" content="Global news - Updated hourly">
-    <meta property="og:title" content="News Tiger Explorer">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://yusdesign.github.io/newstiger/">
+    <title>🐅 NewsTiger - Guardian News Search</title>
+    <meta name="description" content="Search The Guardian newspaper via open API">
+    
+    <!-- Base styles -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            border-radius: 15px 15px 0 0;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        header h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            font-size: 0.3em;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .update-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #4caf50;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        main {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        #search-input {
+            flex: 2;
+            min-width: 250px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        #search-input:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30,60,114,0.1);
+        }
+
+        #country-select {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            min-width: 150px;
+        }
+
+        #search-btn {
+            padding: 15px 30px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #search-btn:hover {
+            background: #2a5298;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            background: #eef2f7;
+            border: 1px solid #d0d9e8;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: #1e3c72;
+            color: white;
+            border-color: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3c72;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1e3c72;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .results-header h2 {
+            color: #1e3c72;
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9em;
+            background: #eef2f7;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .news-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .news-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            border-left: 4px solid #1e3c72;
+            display: flex;
+            gap: 20px;
+        }
+
+        .news-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .news-thumbnail {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-content h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        .news-content h3 a {
+            color: #1e3c72;
+            text-decoration: none;
+        }
+
+        .news-content h3 a:hover {
+            text-decoration: underline;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .summary {
+            color: #444;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #1e3c72;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .read-more-btn:hover {
+            background: #2a5298;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: #333;
+            color: white;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.error {
+            background: #f44336;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            #search-input, #country-select, #search-btn {
+                width: 100%;
+            }
+            
+            .news-card {
+                flex-direction: column;
+            }
+            
+            .news-thumbnail {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .update-badge {
+                position: static;
+                margin-top: 15px;
+                display: inline-block;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🌍 News Tiger 🐅</h1>
-            <p>Global news - Updated hourly</p>
+            <h1>🐅 NewsTiger <span>by The Guardian</span></h1>
+            <p>Search and explore news from The Guardian newspaper</p>
             <div class="update-badge" id="update-badge">Last update: <span id="last-update">Loading...</span></div>
         </header>
 
         <main>
             <div class="search-section">
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search news..." value="technology">
+                    <input type="text" id="search-input" placeholder="Enter search term (e.g., climate change, AI, Russia...)" value="technology">
                     <select id="country-select">
                         <option value="">All Countries</option>
-                        <option value="RU" selected>🇷🇺 Russia</option>
+                        <option value="RU">🇷🇺 Russia</option>
                         <option value="UA">🇺🇦 Ukraine</option>
                         <option value="US">🇺🇸 United States</option>
                         <option value="GB">🇬🇧 United Kingdom</option>
                         <option value="DE">🇩🇪 Germany</option>
                         <option value="FR">🇫🇷 France</option>
+                        <option value="JP">🇯🇵 Japan</option>
+                        <option value="IN">🇮🇳 India</option>
+                        <option value="CN">🇨🇳 China</option>
+                        <option value="AU">🇦🇺 Australia</option>
                     </select>
-                    <button id="search-btn">Search</button>
+                    <button id="search-btn">🔍 Search</button>
                 </div>
-                
-                <!-- Current filter indicator -->
-                <div id="current-filter" class="current-filter">
-                    Showing: <span id="filter-display">All Countries</span>
+
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-query="russia">🇷🇺 Russia</button>
+                    <button class="preset-btn" data-query="ukraine">🇺🇦 Ukraine</button>
+                    <button class="preset-btn" data-query="technology">💻 Technology</button>
+                    <button class="preset-btn" data-query="climate change">🌍 Climate</button>
+                    <button class="preset-btn" data-query="business">📊 Business</button>
+                    <button class="preset-btn" data-query="sport">⚽ Sport</button>
+                    <button class="preset-btn" data-query="science">🔬 Science</button>
+                    <button class="preset-btn" data-query="politics">🏛️ Politics</button>
+                    <button class="preset-btn" data-query="">📰 Latest News</button>
                 </div>
             </div>
 
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="latest">📰 Latest News</button>
-                <button class="tab-btn" data-tab="trending">📈 Trending</button>
-                <button class="tab-btn" data-tab="saved">💾 Saved Searches</button>
-            </div>
-
-            <div id="loading" class="loading" style="display: none;">
+            <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Loading news...</p>
+                <p>Fetching news from The Guardian...</p>
             </div>
 
-            <div class="tab-content active" id="latest-tab">
-                <h2>Latest Headlines</h2>
-                <div id="latest-news" class="news-grid"></div>
-            </div>
-
-            <div class="tab-content" id="trending-tab">
-                <h2>Trending Topics (Last 24h)</h2>
-                <div id="trending-topics" class="trending-list"></div>
-            </div>
-
-            <div class="tab-content" id="saved-tab">
-                <h2>Popular Searches</h2>
-                <div class="saved-searches">
-                    <button class="saved-search" data-query="technology">💻 Technology</button>
-                    <button class="saved-search" data-query="climate change">🌍 Climate</button>
-                    <button class="saved-search" data-query="sports">⚽ Sports</button>
-                    <button class="saved-search" data-query="business">📊 Business</button>
-                    <button class="saved-search" data-query="health">🏥 Health</button>
-                    <button class="saved-search" data-query="science">🔬 Science</button>
-                    <button class="saved-search" data-query="russia">🇷🇺 Russia</button>
-                    <button class="saved-search" data-query="ukraine">🇺🇦 Ukraine</button>
-                </div>
-                
-                <div id="search-history" class="search-history">
-                    <!-- Search history will appear here -->
-                </div>
-                
-                <div id="saved-results" class="news-grid"></div>
+            <div id="latest-news" class="news-grid">
+                <!-- News will be displayed here -->
             </div>
         </main>
 
         <footer>
-            <p><a href="https://github.com/yusdesign/newstiger" target="_blank">News Tiger Project</a></p>
+            <p>Powered by <a href="https://www.theguardian.com/open-platform" target="_blank">The Guardian Open Platform</a> | 
+            <a href="https://github.com/yusdesign/newstiger" target="_blank">GitHub</a></p>
         </footer>
     </div>
 
-    <script src="js/main.js"></script>
+    <script>
+        // ============================================
+        // NEWSTIGER - Guardian API via JSONP
+        // ============================================
+
+        // Конфигурация
+        const GUARDIAN_API = {
+            key: '1f962fc0-b843-4a63-acb9-770f4c24a86e',
+            url: 'https://content.guardianapis.com/search'
+        };
+
+        // Состояние
+        let currentCallbackId = 0;
+        let currentQuery = '';
+
+        // DOM элементы
+        const searchInput = document.getElementById('search-input');
+        const countrySelect = document.getElementById('country-select');
+        const searchBtn = document.getElementById('search-btn');
+        const loading = document.getElementById('loading');
+        const latestNews = document.getElementById('latest-news');
+        const lastUpdate = document.getElementById('last-update');
+
+        // Инициализация
+        function init() {
+            console.log('🚀 NewsTiger starting...');
+            setupEventListeners();
+            loadLatestNews();
+            updateTimestamp();
+        }
+
+        // Обновление времени
+        function updateTimestamp() {
+            if (lastUpdate) {
+                const now = new Date();
+                lastUpdate.textContent = now.toLocaleString();
+            }
+        }
+
+        // Загрузка последних новостей
+        function loadLatestNews() {
+            showLoading();
+            guardianJSONP({
+                'page-size': 20,
+                'show-fields': 'headline,trailText,thumbnail',
+                'order-by': 'newest'
+            }, (data) => {
+                if (data.response && data.response.status === 'ok') {
+                    const articles = data.response.results.map(formatArticle);
+                    displayArticles(articles, 'Latest News');
+                } else {
+                    showError('Failed to load news');
+                    latestNews.innerHTML = '<div class="no-results">No news available</div>';
+                }
+                hideLoading();
+                updateTimestamp();
+            });
+        }
+
+        // Поиск новостей
+        function searchNews() {
+            const query = searchInput.value.trim();
+            const country = countrySelect.value;
+            
+            if (!query && !country) {
+                loadLatestNews();
+                return;
+            }
+
+            showLoading();
+            
+            // Формируем поисковый запрос
+            let searchQuery = query;
+            if (country) {
+                // Добавляем фильтр по стране через раздел
+                const countrySection = getCountrySection(country);
+                if (countrySection) {
+                    // Используем section для фильтрации
+                    guardianJSONP({
+                        'section': countrySection,
+                        'page-size': 20,
+                        'show-fields': 'headline,trailText,thumbnail'
+                    }, (data) => {
+                        handleSearchResponse(data, query || getCountryName(country));
+                    });
+                    return;
+                }
+            }
+            
+            // Обычный поиск по запросу
+            guardianJSONP({
+                'q': searchQuery || '*',
+                'page-size': 20,
+                'show-fields': 'headline,trailText,thumbnail'
+            }, (data) => {
+                handleSearchResponse(data, searchQuery || 'News');
+            });
+        }
+
+        // Обработка ответа от API
+        function handleSearchResponse(data, displayQuery) {
+            if (data.response && data.response.status === 'ok') {
+                const articles = data.response.results.map(formatArticle);
+                if (articles.length > 0) {
+                    displayArticles(articles, `Search: ${displayQuery}`);
+                } else {
+                    latestNews.innerHTML = '<div class="no-results">No articles found</div>';
+                }
+            } else {
+                showError('Search failed');
+                loadLatestNews();
+            }
+            hideLoading();
+            updateTimestamp();
+        }
+
+        // Получить раздел для страны
+        function getCountrySection(country) {
+            const sections = {
+                'RU': 'world/russia',
+                'UA': 'world/ukraine',
+                'US': 'us-news',
+                'GB': 'uk-news',
+                'DE': 'world/germany',
+                'FR': 'world/france',
+                'JP': 'world/japan',
+                'IN': 'world/india',
+                'CN': 'world/china',
+                'AU': 'australia-news'
+            };
+            return sections[country] || null;
+        }
+
+        // Получить название страны
+        function getCountryName(country) {
+            const names = {
+                'RU': 'Russia', 'UA': 'Ukraine', 'US': 'USA',
+                'GB': 'UK', 'DE': 'Germany', 'FR': 'France',
+                'JP': 'Japan', 'IN': 'India', 'CN': 'China', 'AU': 'Australia'
+            };
+            return names[country] || country;
+        }
+
+        // JSONP запрос к Guardian
+        function guardianJSONP(params, callback) {
+            currentCallbackId++;
+            const callbackName = `guardianCallback${currentCallbackId}`;
+            
+            window[callbackName] = function(data) {
+                document.head.removeChild(script);
+                delete window[callbackName];
+                callback(data);
+            };
+            
+            const queryParams = {
+                ...params,
+                'api-key': GUARDIAN_API.key,
+                'format': 'json',
+                'callback': callbackName
+            };
+            
+            const url = GUARDIAN_API.url + '?' + new URLSearchParams(queryParams).toString();
+            
+            const script = document.createElement('script');
+            script.src = url;
+            script.onerror = function() {
+                document.head.removeChild(script);
+                delete window[callbackName];
+                callback({ response: { status: 'error' } });
+                hideLoading();
+            };
+            document.head.appendChild(script);
+        }
+
+        // Форматирование статьи
+        function formatArticle(result) {
+            const fields = result.fields || {};
+            return {
+                title: fields.headline || result.webTitle || 'No title',
+                url: result.webUrl || '#',
+                source: 'The Guardian',
+                date: formatDate(result.webPublicationDate),
+                country: getArticleCountry(result.sectionId),
+                section: result.sectionName || 'News',
+                summary: (fields.trailText || '').replace(/<[^>]*>/g, '').substring(0, 200) + '...',
+                image: fields.thumbnail || ''
+            };
+        }
+
+        // Определение страны статьи
+        function getArticleCountry(section) {
+            const countryMap = {
+                'us-news': 'US',
+                'uk-news': 'GB',
+                'australia-news': 'AU',
+                'world/russia': 'RU',
+                'world/ukraine': 'UA',
+                'world/germany': 'DE',
+                'world/france': 'FR',
+                'world/japan': 'JP',
+                'world/india': 'IN',
+                'world/china': 'CN',
+                'world/europe-news': 'EU'
+            };
+            return countryMap[section] || 'Global';
+        }
+
+        // Отображение статей
+        function displayArticles(articles, title) {
+            if (!articles || articles.length === 0) {
+                latestNews.innerHTML = '<div class="no-results">No articles found</div>';
+                return;
+            }
+            
+            let html = `<div class="results-header">
+                <h2>📰 ${escapeHtml(title)}</h2>
+                <p class="results-count">${articles.length} articles from The Guardian</p>
+            </div>`;
+            
+            articles.forEach(article => {
+                html += `
+                    <div class="news-card">
+                        ${article.image ? `<img src="${escapeHtml(article.image)}" alt="${escapeHtml(article.title)}" class="news-thumbnail" onerror="this.style.display='none'">` : ''}
+                        <div class="news-content">
+                            <h3><a href="${escapeHtml(article.url)}" target="_blank" rel="noopener">${escapeHtml(article.title)}</a></h3>
+                            <div class="news-meta">
+                                <span class="source">📰 ${escapeHtml(article.source)}</span>
+                                <span class="country">🌍 ${escapeHtml(article.country)}</span>
+                                <span class="date">📅 ${escapeHtml(article.date)}</span>
+                                <span class="section">🏷️ ${escapeHtml(article.section)}</span>
+                            </div>
+                            <p class="summary">${escapeHtml(article.summary)}</p>
+                            <a href="${escapeHtml(article.url)}" target="_blank" rel="noopener" class="read-more-btn">📖 Read on Guardian</a>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            latestNews.innerHTML = html;
+        }
+
+        // Форматирование даты
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Unknown';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString() + ' ' + 
+                       date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        // Экранирование HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Управление загрузкой
+        function showLoading() {
+            if (loading) loading.style.display = 'block';
+        }
+
+        function hideLoading() {
+            if (loading) loading.style.display = 'none';
+        }
+
+        // Показ ошибок
+        function showError(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast error';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Настройка обработчиков
+        function setupEventListeners() {
+            searchBtn?.addEventListener('click', searchNews);
+            
+            searchInput?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchNews();
+            });
+            
+            countrySelect?.addEventListener('change', () => {
+                if (searchInput.value.trim() || countrySelect.value) {
+                    searchNews();
+                }
+            });
+            
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const query = btn.dataset.query;
+                    searchInput.value = query || '';
+                    countrySelect.value = '';
+                    searchNews();
+                });
+            });
+        }
+
+        // Запуск
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>
