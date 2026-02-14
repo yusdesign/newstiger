@@ -244,17 +244,34 @@ class GuardianFetcher:
         
         # 9. INDEX
         print("\n📋 Creating Index")
+        
+        # Calculate total articles properly
+        total = 0
+        if russia and 'articles' in russia:
+            total += len(russia['articles'])
+        if ukraine and 'articles' in ukraine:
+            total += len(ukraine['articles'])
+        if us and 'articles' in us:
+            total += len(us['articles'])
+        if uk and 'articles' in uk:
+            total += len(uk['articles'])
+        if tech and 'articles' in tech:
+            total += len(tech['articles'])
+        if world and 'articles' in world:
+            total += len(world['articles'])
+        
         index = {
             'last_update': datetime.now().isoformat(),
             'message': 'Fresh Guardian news',
-            'total_articles': sum(
-                len(russia.get('articles', [])) if russia else 0,
-                len(ukraine.get('articles', [])) if ukraine else 0,
-                len(us.get('articles', [])) if us else 0,
-                len(uk.get('articles', [])) if uk else 0,
-                len(tech.get('articles', [])) if tech else 0,
-                len(world.get('articles', [])) if world else 0
-            )
+            'total_articles': total,
+            'sections': {
+                'russia': len(russia['articles']) if russia and 'articles' in russia else 0,
+                'ukraine': len(ukraine['articles']) if ukraine and 'articles' in ukraine else 0,
+                'us': len(us['articles']) if us and 'articles' in us else 0,
+                'uk': len(uk['articles']) if uk and 'articles' in uk else 0,
+                'technology': len(tech['articles']) if tech and 'articles' in tech else 0,
+                'world': len(world['articles']) if world and 'articles' in world else 0
+            }
         }
         self.save_json(index, 'index.json')
         
