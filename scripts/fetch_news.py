@@ -147,6 +147,7 @@ class GDELTFetcher:
             json.dump(data, f, ensure_ascii=False, indent=2)
         print(f"Saved search: {filepath}")
     
+    # Add to your fetch_news.py - include Russia-specific news
     def run(self):
         """Main fetch routine"""
         print(f"Starting GDELT fetch at {datetime.now()}")
@@ -164,36 +165,30 @@ class GDELTFetcher:
         if trending:
             self.save_json(trending, "trending.json")
         
-        # 3. Fetch popular searches
-        popular_searches = [
-            ("climate change", None),
-            ("artificial intelligence", None),
-            ("business", None),
-            ("health", "RU"),
-            ("sports", None),
-            ("election", "RU"),
-            ("technology", "RU"),
-            ("technology", "RU"),
-            ("technology", "RU")
+        # 3. Fetch country-specific news (for quick access)
+        country_searches = [
+            ("Russia", "RU", 20),
+            ("Ukraine", "UA", 20),
+            ("USA", "US", 20),
+            ("UK", "GB", 20),
+            ("Germany", "DE", 20),
+            ("France", "FR", 20),
+            ("China", "CN", 20),
         ]
         
-        print("\n3. Fetching popular searches...")
-        for query, country in popular_searches:
-            print(f"   - {query} {f'({country})' if country else ''}")
-            news = self.fetch_news(query, max_records=15, country=country)
+        print("\n3. Fetching country-specific news...")
+        for query, country, limit in country_searches:
+            print(f"   - {query} ({country})")
+            news = self.fetch_news(query, max_records=limit, country=country)
             if news:
-                self.save_search(news, query, country)
+                self.save_search(news, f"{query.lower()}_{country}")
             time.sleep(1)  # Be nice to the API
         
         # 4. Create index file
         index = {
             'last_update': datetime.now().isoformat(),
-            'searches': len(popular_searches) + 1,
-            'files': {
-                'latest': 'latest.json',
-                'trending': 'trending.json',
-                'searches': [f"search/{self._get_filename(q, c)}" for q, c in popular_searches]
-            }
+            'searches': len(popular_searches) + len(country_searches),
+            'countries': [c for _, c, _ in country_searches]
         }
         self.save_json(index, "index.json")
         
