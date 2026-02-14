@@ -295,38 +295,36 @@ function formatArticles(rawData, query) {
     };
 }
 
-// Display search results
+// Display search results handled by Guardian data
 function displaySearchResults(articles) {
     if (!articles || articles.length === 0) {
         latestNews.innerHTML = '<div class="no-results">No articles found</div>';
         return;
     }
     
-    // Get current filter context
     const country = countrySelect.value;
     const query = searchInput.value;
     
     let html = `<div class="results-header">
-        <h2>📰 Results for: "${escapeHtml(query)}" ${country ? `in ${getCountryName(country)}` : '🌍 Worldwide'}</h2>
-        <p class="results-count">Found ${articles.length} articles</p>
+        <h2>📰 Results for: "${escapeHtml(query)}" ${country ? `in ${getCountryName(country)}` : ''}</h2>
+        <p class="results-count">Found ${articles.length} articles from The Guardian</p>
     </div>`;
     
     articles.forEach((article, index) => {
         html += `
-            <div class="news-card" data-article-index="${index}">
+            <div class="news-card">
                 ${article.image ? `<img src="${article.image}" alt="${escapeHtml(article.title)}" class="news-thumbnail" onerror="this.style.display='none'">` : ''}
                 <div class="news-content">
-                    <h3><a href="#" onclick="event.preventDefault(); window.openArticle(${index})">${escapeHtml(article.title)}</a></h3>
+                    <h3><a href="${escapeHtml(article.url)}" target="_blank">${escapeHtml(article.title)}</a></h3>
                     <div class="news-meta">
                         <span class="source">📰 ${escapeHtml(article.source)}</span>
                         <span class="country">🌍 ${escapeHtml(article.country)}</span>
                         <span class="date">📅 ${escapeHtml(article.date)}</span>
+                        <span class="section">🏷️ ${escapeHtml(article.section || 'News')}</span>
                     </div>
                     <p class="summary">${escapeHtml(article.summary)}</p>
                     <div class="news-actions">
-                        <button class="read-more-btn" onclick="window.openArticle(${index})">📖 Read Full Article</button>
-                        ${article.themes && article.themes.length ? 
-                            `<span class="themes">🏷️ ${article.themes.slice(0, 3).join(' · ')}</span>` : ''}
+                        <a href="${escapeHtml(article.url)}" target="_blank" class="read-more-btn">📖 Read on Guardian</a>
                     </div>
                 </div>
             </div>
@@ -334,7 +332,6 @@ function displaySearchResults(articles) {
     });
     
     latestNews.innerHTML = html;
-    window.currentArticles = articles;
 }
 
 // Open article in modal
