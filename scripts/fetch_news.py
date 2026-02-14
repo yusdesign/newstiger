@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-GDELT News Fetcher - Runs via GitHub Actions
-Fetches latest news and saves as JSON for static site
+GDELT News Fetcher - Creates JSON files for static site
 """
 
 import requests
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import time
 
@@ -35,14 +34,15 @@ class GDELTFetcher:
             params['sourcecountry'] = country
         
         try:
+            print(f"Fetching: {query} ({country if country else 'all'})")
             response = requests.get(self.api_url, params=params, timeout=30)
             if response.status_code == 200:
                 return self._format_articles(response.json(), query)
             else:
-                print(f"Error fetching {query}: {response.status_code}")
+                print(f"  Error: {response.status_code}")
                 return None
         except Exception as e:
-            print(f"Exception fetching {query}: {e}")
+            print(f"  Exception: {e}")
             return None
     
     def fetch_trending(self, hours=24):
@@ -59,19 +59,22 @@ class GDELTFetcher:
         }
         
         try:
+            print("Fetching trending topics...")
             response = requests.get(self.api_url, params=params, timeout=30)
             if response.status_code == 200:
                 return self._format_trending(response.json())
-            return None
+            else:
+                print(f"  Trending error: {response.status_code}")
+                return self._generate_mock_trending()
         except Exception as e:
-            print(f"Error fetching trending: {e}")
-            return None
+            print(f"  Trending exception: {e}")
+            return self._generate_mock_trending()
     
     def _format_articles(self, raw_data, query):
         """Format articles for JSON storage"""
         articles = []
         
-        for article in raw_data.get('articles', []):
+        for article in raw_data.get('articles', [])[:25]:
             articles.append({
                 'title': article.get('title', 'No title'),
                 'url': article.get('url', '#'),
@@ -79,7 +82,7 @@ class GDELTFetcher:
                 'date': self._format_date(article.get('seendate', '')),
                 'country': article.get('sourcecountry', 'Unknown'),
                 'language': article.get('language', 'Unknown'),
-                'summary': article.get('content', '')[:300] if article.get('content') else '',
+                'summary': (article.get('content', '')[:300] + '...') if article.get('content') else '',
                 'themes': article.get('themes', [])[:5]
             })
         
@@ -94,7 +97,7 @@ class GDELTFetcher:
         """Format trending data"""
         trends = []
         
-        for item in raw_data.get('timeline', []):
+        for item in raw_data.get('timeline', [])[:30]:
             trends.append({
                 'date': item.get('date', ''),
                 'value': item.get('value', 0)
@@ -102,7 +105,25 @@ class GDELTFetcher:
         
         return {
             'timestamp': datetime.now().isoformat(),
-            'trends': trends[:30]  # Top 30
+            'trends': trends
+        }
+    
+    def _generate_mock_trending(self):
+        """Generate mock trending data as fallback"""
+        trends = []
+        now = datetime.now()
+        
+        for i in range(15):
+            date = now - timedelta(hours=i)
+            trends.append({
+                'date': date.strftime('%Y%m%d%H'),
+                'value': 1000 - (i * 50)  # Decreasing trend
+            })
+        
+        return {
+            'timestamp': datetime.now().isoformat(),
+            'trends': trends,
+            'note': 'Mock data - API unavailable'
         }
     
     def _format_date(self, date_str):
@@ -128,81 +149,102 @@ class GDELTFetcher:
         filepath = self.output_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"Saved {filepath}")
+        print(f"  Saved: {filename}")
     
     def save_search(self, data, query, country=None):
         """Save search results with safe filename"""
         # Create safe filename
         safe_query = query.lower().replace(' ', '_')
-        safe_query = ''.join(c for c in safe_query if c.isalnum() or c == '_')
-        safe_query = safe_query[:50]  # Limit length
+        safe_query = ''.join(c for c in safe_query if c.isalnum() or c == '_')[:50]
         
         if country:
-            filename = f"{safe_query}_{country}.json"
+            filename = f"{safe_query}_{country.lower()}.json"
         else:
             filename = f"{safe_query}.json"
         
         filepath = self.search_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f"Saved search: {filepath}")
+        print(f"  Saved search: {filename}")
     
-    # Add to your fetch_news.py - include Russia-specific news
     def run(self):
         """Main fetch routine"""
+        print(f"\n{'='*50}")
         print(f"Starting GDELT fetch at {datetime.now()}")
+        print(f"{'='*50}\n")
         
-        # 1. Fetch latest technology news (default)
-        print("\n1. Fetching latest technology news...")
+        # 1. Fetch trending topics (always do this first)
+        print("📈 Fetching trending topics...")
+        trending = self.fetch_trending()
+        if trending:
+            self.save_json(trending, "trending.json")
+        else:
+            # Create default trending file
+            default_trending = {
+                'timestamp': datetime.now().isoformat(),
+                'trends': [],
+                'note': 'No data available'
+            }
+            self.save_json(default_trending, "trending.json")
+        
+        # 2. Fetch latest technology news (default)
+        print("\n📰 Fetching latest technology news...")
         tech_news = self.fetch_news("technology", max_records=30)
         if tech_news:
             self.save_json(tech_news, "latest.json")
             self.save_search(tech_news, "technology")
         
-        # 2. Fetch trending topics
-        print("\n2. Fetching trending topics...")
-        trending = self.fetch_trending()
-        if trending:
-            self.save_json(trending, "trending.json")
-        
-        # 3. Fetch country-specific news (for quick access)
+        # 3. Fetch country-specific news
+        print("\n🌍 Fetching country-specific news...")
         country_searches = [
-            ("Russia", "RU", 20),
-            ("Ukraine", "UA", 20),
-            ("USA", "US", 20),
-            ("UK", "GB", 20),
-            ("Germany", "DE", 20),
-            ("France", "FR", 20),
-            ("China", "CN", 20),
+            ("Russia", "RU"),
+            ("Ukraine", "UA"),
+            ("USA", "US"),
+            ("UK", "GB"),
+            ("Germany", "DE"),
+            ("France", "FR"),
+            ("China", "CN"),
         ]
         
-        print("\n3. Fetching country-specific news...")
-        for query, country, limit in country_searches:
-            print(f"   - {query} ({country})")
-            news = self.fetch_news(query, max_records=limit, country=country)
+        for query, country in country_searches:
+            print(f"  - {query} ({country})")
+            news = self.fetch_news(query, max_records=20, country=country)
             if news:
-                self.save_search(news, f"{query.lower()}_{country}")
+                self.save_search(news, query, country)
             time.sleep(1)  # Be nice to the API
         
-        # 4. Create index file
+        # 4. Fetch popular searches
+        print("\n🔍 Fetching popular searches...")
+        popular_searches = [
+            ("climate change", None),
+            ("artificial intelligence", None),
+            ("business", None),
+            ("sports", None),
+            ("health", None),
+            ("election", None),
+        ]
+        
+        for query, country in popular_searches:
+            print(f"  - {query}")
+            news = self.fetch_news(query, max_records=15, country=country)
+            if news:
+                self.save_search(news, query, country)
+            time.sleep(1)
+        
+        # 5. Create index file
+        print("\n📋 Creating index file...")
         index = {
             'last_update': datetime.now().isoformat(),
-            'searches': len(popular_searches) + len(country_searches),
-            'countries': [c for _, c, _ in country_searches]
+            'trending': 'trending.json',
+            'latest': 'latest.json',
+            'countries': [c for _, c in country_searches],
+            'searches': len(popular_searches) + len(country_searches) + 1
         }
         self.save_json(index, "index.json")
         
-        print(f"\n✅ Fetch complete at {datetime.now()}")
-    
-    def _get_filename(self, query, country):
-        """Get filename for a query"""
-        safe = query.lower().replace(' ', '_')
-        safe = ''.join(c for c in safe if c.isalnum() or c == '_')[:50]
-        if country:
-            return f"{safe}_{country}.json"
-        return f"{safe}.json"
-
-from datetime import timedelta
+        print(f"\n{'='*50}")
+        print(f"✅ Fetch complete at {datetime.now()}")
+        print(f"{'='*50}")
 
 if __name__ == "__main__":
     fetcher = GDELTFetcher()
