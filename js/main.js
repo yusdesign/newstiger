@@ -100,58 +100,55 @@ async function searchNews() {
     currentQuery = query;
     currentCountry = country;
     
-    // Update URL
     updateURL(query, country);
     
     try {
-        // Create filename from query
-        const safeQuery = query.toLowerCase()
-            .replace(/[^a-z0-9]+/g, '_')
-            .substring(0, 40);
+        // Map queries to actual filenames that exist
+        let filename;
+        const lowerQuery = query.toLowerCase();
         
-        // Try country-specific file first
-        let filename = country 
-            ? `news/search/${safeQuery}_${country.toLowerCase()}.json`
-            : `news/search/${safeQuery}.json`;
+        if (lowerQuery.includes('russia') || country === 'RU') {
+            filename = 'news/search/russia.json';
+        } else if (lowerQuery.includes('ukraine') || country === 'UA') {
+            filename = 'news/search/ukraine.json';
+        } else if (lowerQuery.includes('us') || country === 'US') {
+            filename = 'news/search/us.json';
+        } else if (lowerQuery.includes('uk') || country === 'GB') {
+            filename = 'news/search/gb.json';
+        } else if (lowerQuery.includes('technology')) {
+            filename = 'news/search/technology.json';
+        } else if (lowerQuery.includes('climate')) {
+            filename = 'news/search/climate_change.json';
+        } else if (lowerQuery.includes('business')) {
+            filename = 'news/search/business.json';
+        } else if (lowerQuery.includes('sports')) {
+            filename = 'news/search/sports.json';
+        } else if (lowerQuery.includes('politics')) {
+            filename = 'news/search/politics.json';
+        } else {
+            // Default to latest.json
+            filename = 'news/latest.json';
+        }
         
         console.log('📁 Loading:', filename);
-        
-        let response = await fetch(filename + '?t=' + Date.now());
-        
-        // If that fails, try without country
-        if (!response.ok && country) {
-            filename = `news/search/${safeQuery}.json`;
-            response = await fetch(filename + '?t=' + Date.now());
-        }
-        
-        // If still fails, try latest.json
-        if (!response.ok) {
-            response = await fetch('news/latest.json?t=' + Date.now());
-        }
+        const response = await fetch(filename + '?t=' + Date.now());
         
         if (response.ok) {
             const data = await response.json();
-            
             if (data.articles && data.articles.length > 0) {
-                // Filter by query if needed
-                let articles = data.articles;
-                if (data.source !== query) {
-                    articles = data.articles.filter(a => 
-                        a.title.toLowerCase().includes(query.toLowerCase()) ||
-                        (a.summary && a.summary.toLowerCase().includes(query.toLowerCase()))
-                    );
-                }
-                
-                if (articles.length > 0) {
-                    displayArticles(articles, query);
-                } else {
-                    displayArticles(data.articles.slice(0, 8), query);
-                }
+                displayArticles(data.articles, query);
             } else {
                 loadFallbackNews(query);
             }
         } else {
-            loadFallbackNews(query);
+            // If specific file fails, try latest.json
+            const latestResponse = await fetch('news/latest.json?t=' + Date.now());
+            if (latestResponse.ok) {
+                const latestData = await latestResponse.json();
+                displayArticles(latestData.articles.slice(0, 10), query);
+            } else {
+                loadFallbackNews(query);
+            }
         }
     } catch (error) {
         console.error('Search error:', error);
