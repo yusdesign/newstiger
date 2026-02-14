@@ -357,17 +357,73 @@ function getCountryName(code) {
     return countries[code] || code;
 }
 
-// Load trending data
+// Load trending data with fallback
 async function loadTrending() {
     try {
+        // Try to fetch from GitHub Pages first
         const response = await fetch('news/trending.json?t=' + Date.now());
-        if (!response.ok) throw new Error('Failed to load');
+        
+        if (!response.ok) {
+            // If 404, use mock data or fetch live
+            console.log('Trending file not found, using live data or fallback');
+            const liveTrends = await fetchLiveTrending();
+            displayTrending(liveTrends);
+            return;
+        }
+        
         const data = await response.json();
         trendingData = data.trends || [];
         displayTrending(trendingData);
     } catch (error) {
         console.error('Error loading trending:', error);
+        // Fallback to live fetch
+        const liveTrends = await fetchLiveTrending();
+        displayTrending(liveTrends);
     }
+}
+
+// Fetch live trending data from GDELT
+async function fetchLiveTrending() {
+    try {
+        // Use proxy to fetch live trending from GDELT
+        const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(
+            'https://api.gdeltproject.org/api/v2/doc/doc?query=*&mode=timelinevol&format=json&maxrecords=15'
+        );
+        
+        const response = await fetch(proxyUrl);
+        const data = await response.json();
+        const parsed = JSON.parse(data.contents);
+        
+        // Format the data
+        const trends = (parsed.timeline || []).map(item => ({
+            date: item.date || '',
+            value: item.value || 0
+        }));
+        
+        return trends;
+    } catch (e) {
+        console.log('Live trending failed, using mock data');
+        // Return mock data as last resort
+        return generateMockTrending();
+    }
+}
+
+// Generate mock trending data for fallback
+function generateMockTrending() {
+    const trends = [];
+    const now = new Date();
+    
+    for (let i = 0; i < 10; i++) {
+        const date = new Date(now);
+        date.setHours(now.getHours() - i);
+        
+        trends.push({
+            date: date.toISOString().split('T')[0].replace(/-/g, ''),
+            value: Math.floor(Math.random() * 1000) + 500
+        });
+    }
+    
+    return trends;
 }
 
 // Display trending topics
