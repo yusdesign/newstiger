@@ -267,23 +267,48 @@ class GuardianFetcher:
         # 6. INDEX
         print("\n📋 PHASE 6: INDEX")
         
-        # Calculate totals
+        # Calculate totals safely
         total_articles = 0
         sections_summary = {}
         
         for name, result in all_results.items():
-            count = len(result.get('articles', []))
-            total_articles += count
-            sections_summary[name] = count
+            try:
+                if result and isinstance(result, dict):
+                    articles = result.get('articles', [])
+                    if articles and isinstance(articles, list):
+                        count = len(articles)
+                        total_articles += count
+                        sections_summary[name] = count
+                        print(f"  📊 {name}: {count} articles")
+                    else:
+                        sections_summary[name] = 0
+                        print(f"  ⚠️ {name}: no articles")
+            except Exception as e:
+                print(f"  ⚠️ Error processing {name}: {e}")
+                sections_summary[name] = 0
         
         index = {
             'last_update': datetime.now().isoformat(),
             'total_articles': total_articles,
             'sections': sections_summary,
             'files_created': len(all_results),
-            'message': 'Fresh Guardian news'
+            'message': 'Fresh Guardian news',
+            'latest_file': 'latest.json',
+            'trending_file': 'trending.json'
         }
-        self.save_json(index, 'index.json')
+        
+        try:
+            self.save_json(index, 'index.json')
+            print(f"  ✅ Index saved with {total_articles} total articles")
+        except Exception as e:
+            print(f"  ⚠️ Error saving index: {e}")
+            # Save a minimal index
+            minimal_index = {
+                'last_update': datetime.now().isoformat(),
+                'total_articles': total_articles,
+                'message': 'Minimal index'
+            }
+            self.save_json(minimal_index, 'index.json')
         
         print(f"\n{'='*70}")
         print(f"✅ COMPLETE!")
