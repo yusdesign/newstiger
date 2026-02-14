@@ -306,25 +306,35 @@ function displaySearchResults(articles) {
     const query = searchInput.value;
     
     let html = `<div class="results-header">
-        <h2>📰 Results for: "${escapeHtml(query)}" ${country ? `in ${getCountryName(country)}` : ''}</h2>
-        <p class="results-count">Found ${articles.length} articles from The Guardian</p>
+        <h2>📰 News from The Guardian</h2>
+        <p class="results-count">Found ${articles.length} articles</p>
     </div>`;
     
-    articles.forEach((article, index) => {
+    articles.forEach(article => {
+        // Handle both old and new data formats
+        const title = article.title || article.webTitle || 'No title';
+        const url = article.url || article.webUrl || '#';
+        const source = article.source || 'The Guardian';
+        const date = article.date || article.webPublicationDate || '';
+        const country_code = article.country || 'Global';
+        const summary = article.summary || article.fields?.trailText || '';
+        const image = article.image || article.fields?.thumbnail || '';
+        const section = article.section || article.sectionName || 'News';
+        
         html += `
             <div class="news-card">
-                ${article.image ? `<img src="${article.image}" alt="${escapeHtml(article.title)}" class="news-thumbnail" onerror="this.style.display='none'">` : ''}
+                ${image ? `<img src="${image}" alt="${escapeHtml(title)}" class="news-thumbnail" onerror="this.style.display='none'">` : ''}
                 <div class="news-content">
-                    <h3><a href="${escapeHtml(article.url)}" target="_blank">${escapeHtml(article.title)}</a></h3>
+                    <h3><a href="${escapeHtml(url)}" target="_blank">${escapeHtml(title)}</a></h3>
                     <div class="news-meta">
-                        <span class="source">📰 ${escapeHtml(article.source)}</span>
-                        <span class="country">🌍 ${escapeHtml(article.country)}</span>
-                        <span class="date">📅 ${escapeHtml(article.date)}</span>
-                        <span class="section">🏷️ ${escapeHtml(article.section || 'News')}</span>
+                        <span class="source">📰 ${escapeHtml(source)}</span>
+                        <span class="country">🌍 ${escapeHtml(country_code)}</span>
+                        <span class="date">📅 ${escapeHtml(formatDate(date))}</span>
+                        <span class="section">🏷️ ${escapeHtml(section)}</span>
                     </div>
-                    <p class="summary">${escapeHtml(article.summary)}</p>
+                    <p class="summary">${escapeHtml(summary.substring(0, 200))}...</p>
                     <div class="news-actions">
-                        <a href="${escapeHtml(article.url)}" target="_blank" class="read-more-btn">📖 Read on Guardian</a>
+                        <a href="${escapeHtml(url)}" target="_blank" class="read-more-btn">📖 Read on Guardian</a>
                     </div>
                 </div>
             </div>
