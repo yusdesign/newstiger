@@ -287,28 +287,41 @@ class GuardianFetcher:
                 print(f"  ⚠️ Error processing {name}: {e}")
                 sections_summary[name] = 0
         
+        # Create index with ALL required fields
         index = {
             'last_update': datetime.now().isoformat(),
             'total_articles': total_articles,
+            'total': total_articles,  # Add this line to fix the error
             'sections': sections_summary,
             'files_created': len(all_results),
             'message': 'Fresh Guardian news',
             'latest_file': 'latest.json',
-            'trending_file': 'trending.json'
+            'trending_file': 'trending.json',
+            'status': 'success'
         }
         
         try:
-            self.save_json(index, 'index.json')
+            # Save to both locations to be safe
+            with open(self.output_dir / 'index.json', 'w', encoding='utf-8') as f:
+                json.dump(index, f, indent=2, ensure_ascii=False)
             print(f"  ✅ Index saved with {total_articles} total articles")
+            
+            # Also save a copy in search directory
+            with open(self.search_dir / 'index.json', 'w', encoding='utf-8') as f:
+                json.dump(index, f, indent=2, ensure_ascii=False)
+                
         except Exception as e:
             print(f"  ⚠️ Error saving index: {e}")
-            # Save a minimal index
-            minimal_index = {
+            # Save minimal version as fallback
+            minimal = {
                 'last_update': datetime.now().isoformat(),
                 'total_articles': total_articles,
+                'total': total_articles,
                 'message': 'Minimal index'
             }
-            self.save_json(minimal_index, 'index.json')
+            with open(self.output_dir / 'index.json', 'w', encoding='utf-8') as f:
+                json.dump(minimal, f, indent=2)
+            print(f"  ✅ Minimal index saved")
         
         print(f"\n{'='*70}")
         print(f"✅ COMPLETE!")
