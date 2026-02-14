@@ -37,8 +37,26 @@ jobs:
           mkdir -p news/search
           echo "{}" > news/index.json
       
-      - name: Fetch GDELT news
-        run: python scripts/fetch_news.py
+      - name: Fetch GDELT news with retry
+        run: |
+          max_retries=3
+          for i in $(seq 1 $max_retries); do
+            echo "Attempt $i of $max_retries"
+            if python scripts/fetch_news.py; then
+              echo "Success on attempt $i"
+              break
+            else
+              if [ $i -eq $max_retries ]; then
+                echo "All attempts failed"
+                # Create fallback data
+                python scripts/create_fallback_data.py
+              else
+                wait_time=$((i * 30))
+                echo "Failed, waiting ${wait_time}s..."
+                sleep $wait_time
+              fi
+            fi
+          done
       
       - name: Verify trending.json was created
         run: |
