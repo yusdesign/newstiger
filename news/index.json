@@ -1,19 +1,15 @@
 {
-  "last_update": "2026-02-14T11:18:40.064294",
-  "searches": 10,
-  "files": {
-    "latest": "latest.json",
-    "trending": "trending.json",
-    "searches": [
-      "search/climate_change.json",
-      "search/artificial_intelligence.json",
-      "search/business.json",
-      "search/health_RU.json",
-      "search/sports.json",
-      "search/election_RU.json",
-      "search/technology_RU.json",
-      "search/technology_RU.json",
-      "search/technology_RU.json"
-    ]
-  }
+  "last_update": "2026-02-14T12:25:59.267684",
+  "trending": "trending.json",
+  "latest": "latest.json",
+  "countries": [
+    "RU",
+    "UA",
+    "US",
+    "GB",
+    "DE",
+    "FR",
+    "CN"
+  ],
+  "searches": 14
 }
