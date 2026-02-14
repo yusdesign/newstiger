@@ -1,7 +1,7 @@
 {
   "query": "Russia",
   "country": "RU",
-  "timestamp": "2026-02-14T14:54:56.113665",
+  "timestamp": "2026-02-14T15:20:24.334424",
   "total": 20,
   "articles": [
     {
@@ -65,6 +65,16 @@
       "themes": []
     },
     {
+      "title": "Польша и страны Прибалтики постоянно боятся Россию , заявил Песков",
+      "url": "https://ria.ru/20260127/peskov-2070478447.html",
+      "source": "ria.ru",
+      "date": "2026-01-27 T0:71",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
       "title": "Медведев оценил шансы  Единой России  добиться успеха на выборах",
       "url": "https://ria.ru/20260211/medvedev-2073759560.html",
       "source": "ria.ru",
@@ -79,16 +89,6 @@
       "url": "https://ria.ru/20260213/rossija-2074173278.html",
       "source": "ria.ru",
       "date": "2026-02-13 T1:14",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
-      "title": "Польша и страны Прибалтики постоянно боятся Россию , заявил Песков",
-      "url": "https://ria.ru/20260127/peskov-2070478447.html",
-      "source": "ria.ru",
-      "date": "2026-01-27 T0:71",
       "country": "Russia",
       "language": "Russian",
       "summary": "",

@@ -1,65 +1,65 @@
 {
-  "timestamp": "2026-02-14T14:54:22.516025",
+  "timestamp": "2026-02-14T15:19:32.407815",
   "trends": [
     {
+      "date": "2026021415",
+      "value": 985
+    },
+    {
       "date": "2026021414",
-      "value": 1000
+      "value": 952
     },
     {
       "date": "2026021413",
-      "value": 937
+      "value": 885
     },
     {
       "date": "2026021412",
-      "value": 917
+      "value": 864
     },
     {
       "date": "2026021411",
-      "value": 843
+      "value": 801
     },
     {
       "date": "2026021410",
-      "value": 794
+      "value": 751
     },
     {
       "date": "2026021409",
-      "value": 732
+      "value": 690
     },
     {
       "date": "2026021408",
-      "value": 709
+      "value": 659
     },
     {
       "date": "2026021407",
-      "value": 638
+      "value": 618
     },
     {
       "date": "2026021406",
-      "value": 583
+      "value": 540
     },
     {
       "date": "2026021405",
-      "value": 559
+      "value": 487
     },
     {
       "date": "2026021404",
-      "value": 491
+      "value": 449
     },
     {
       "date": "2026021403",
-      "value": 464
+      "value": 380
     },
     {
       "date": "2026021402",
-      "value": 401
+      "value": 368
     },
     {
       "date": "2026021401",
-      "value": 333
-    },
-    {
-      "date": "2026021400",
-      "value": 308
+      "value": 289
     }
   ],
   "note": "Mock data - API temporarily unavailable"

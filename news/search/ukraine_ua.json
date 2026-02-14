@@ -1,7 +1,7 @@
 {
   "query": "Ukraine",
   "country": "UA",
-  "timestamp": "2026-02-14T14:55:38.213947",
+  "timestamp": "2026-02-14T15:20:33.945246",
   "total": 20,
   "articles": [
     {
@@ -185,20 +185,20 @@
       "themes": []
     },
     {
-      "title": "УКАЗ ПРЕЗИДЕНТА УКРАЇНИ - Рада національної безпеки і оборони України",
-      "url": "https://rnbo.gov.ua/ua/Ukazy/7415.html",
-      "source": "rnbo.gov.ua",
-      "date": "2026-02-10 T2:31",
-      "country": "Ukraine",
-      "language": "Ukrainian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "На Украине два миллиона мужчин числятся в розыске по линии военкоматов",
       "url": "https://ria.ru/20260114/ukraina-2067822066.html",
       "source": "ria.ru",
       "date": "2026-01-14 T1:21",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "  Охота на людей . Сийярто выступил с серьезным обвинением в адрес Украины",
+      "url": "https://ria.ru/20260131/mobilizatsiya-2071467899.html",
+      "source": "ria.ru",
+      "date": "2026-01-31 T1:71",
       "country": "Russia",
       "language": "Russian",
       "summary": "",
