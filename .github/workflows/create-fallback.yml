@@ -1,0 +1,24 @@
+name: Create Fallback News
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-fallback:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create fallback data
+        run: python scripts/create_fallback_data.py
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add news/
+          git commit -m "📰 Add fallback news data [skip ci]"
+          git push
