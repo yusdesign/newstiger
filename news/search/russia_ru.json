@@ -1,6 +1,6 @@
 {
   "query": "Russia",
-  "timestamp": "2026-02-14T12:33:01.832528",
+  "timestamp": "2026-02-14T13:40:16.713493",
   "total": 20,
   "articles": [
     {
@@ -154,26 +154,6 @@
       "themes": []
     },
     {
-      "title": "СМИ : ЕС хочет внести порты в третьих странах в санкционные списки по России",
-      "url": "https://ria.ru/20260209/es-2073281425.html",
-      "source": "ria.ru",
-      "date": "2026-02-09 T1:63",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
-      "title": "Участник покушения на генерала Алексеева накопил долги в России",
-      "url": "https://ria.ru/20260208/pokushenie-2073032444.html",
-      "source": "ria.ru",
-      "date": "2026-02-08 T1:40",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "Россия готова стать посредником между США и Ираном , заявил Ульянов",
       "url": "https://ria.ru/20260128/rossija-2070664477.html",
       "source": "ria.ru",
@@ -194,10 +174,30 @@
       "themes": []
     },
     {
-      "title": "Посол России в Бельгии рассказал о контактах России с НАТО",
-      "url": "https://ria.ru/20260209/nato-2073090268.html",
+      "title": "СМИ : ЕС хочет внести порты в третьих странах в санкционные списки по России",
+      "url": "https://ria.ru/20260209/es-2073281425.html",
       "source": "ria.ru",
-      "date": "2026-02-08 T2:30",
+      "date": "2026-02-09 T1:63",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "Участник покушения на генерала Алексеева накопил долги в России",
+      "url": "https://ria.ru/20260208/pokushenie-2073032444.html",
+      "source": "ria.ru",
+      "date": "2026-02-08 T1:40",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "Россия ожидает сдержанности в ситуации вокруг Ирана , заявил Песков",
+      "url": "https://ria.ru/20260126/rossija-2070285158.html",
+      "source": "ria.ru",
+      "date": "2026-01-26 T0:83",
       "country": "Russia",
       "language": "Russian",
       "summary": "",
