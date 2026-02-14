@@ -21,22 +21,22 @@
         <main>
             <div class="search-section">
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="Search news (e.g., climate, AI, Olympics...)" value="technology">
+                    <input type="text" id="search-input" placeholder="Search news..." value="technology">
                     <select id="country-select">
                         <option value="">All Countries</option>
-                        <option value="RU">Russia</option>
-                        <option value="US">United States</option>
-                        <option value="GB">United Kingdom</option>
-                        <option value="CA">Canada</option>
-                        <option value="AU">Australia</option>
-                        <option value="IN">India</option>
-                        <option value="DE">Germany</option>
-                        <option value="FR">France</option>
-                        <option value="JP">Japan</option>
-                        <option value="BR">Brazil</option>
-                        <option value="ZA">South Africa</option>
+                        <option value="RU" selected>🇷🇺 Russia</option>
+                        <option value="UA">🇺🇦 Ukraine</option>
+                        <option value="US">🇺🇸 United States</option>
+                        <option value="GB">🇬🇧 United Kingdom</option>
+                        <option value="DE">🇩🇪 Germany</option>
+                        <option value="FR">🇫🇷 France</option>
                     </select>
                     <button id="search-btn">Search</button>
+                </div>
+                
+                <!-- Current filter indicator -->
+                <div id="current-filter" class="current-filter">
+                    Showing: <span id="filter-display">All Countries</span>
                 </div>
             </div>
 
