@@ -4,17 +4,17 @@ on:
   schedule:
     # Check for new articles every 15 minutes
     - cron: '*/15 * * * *'
-  # Allow manual trigger
+  # Allow manual trigger with different modes
   workflow_dispatch:
     inputs:
-      command:
-        description: 'Command to run'
+      mode:
+        description: 'Bot mode'
         required: true
-        default: 'check'
+        default: 'polling'
         type: choice
         options:
+          - polling
           - check
-          - broadcast
           - test
 
 jobs:
@@ -33,25 +33,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install python-telegram-bot requests
+          pip install python-telegram-bot==20.7 requests
       
-      - name: Create last_update file if not exists
-        run: |
-          if [ ! -f last_bot_update.txt ]; then
-            echo "1970-01-01T00:00:00" > last_bot_update.txt
-          fi
-      
-      - name: Run Telegram bot check
+      - name: Run Telegram bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          BOT_MODE: ${{ github.event.inputs.command || 'check' }}
+          BOT_MODE: ${{ github.event.inputs.mode || 'check' }}
         run: |
           python scripts/telegram_bot.py
-      
-      - name: Commit last_update timestamp
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add last_bot_update.txt
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update bot timestamp [skip ci]"
-          git push
