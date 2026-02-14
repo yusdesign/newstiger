@@ -203,69 +203,83 @@ async function performSearch() {
 async function fetchFreshNews(query, country = '') {
     showLoading();
     
-    // Build GDELT URL with country filter
-    let gdeltUrl = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&format=json&maxrecords=25&sort=date`;
-    if (country) {
-        gdeltUrl += `&sourcecountry=${country}`;
-    }
-    
-    // Try multiple proxies
-    const proxyUrls = [
-        `https://api.allorigins.win/get?url=${encodeURIComponent(gdeltUrl)}`,
-        `https://corsproxy.io/?${encodeURIComponent(gdeltUrl)}`,
-        `https://cors-anywhere.herokuapp.com/${gdeltUrl}`
-    ];
-    
-    for (const proxyUrl of proxyUrls) {
-        try {
-            console.log('Trying proxy:', proxyUrl);
-            const response = await fetch(proxyUrl);
-            let data;
-            
-            if (proxyUrl.includes('allorigins')) {
-                const wrapped = await response.json();
-                data = JSON.parse(wrapped.contents);
-            } else {
-                data = await response.json();
-            }
-            
-            if (data && data.articles) {
-                const formatted = formatArticles(data, query);
-                displaySearchResults(formatted.articles);
-                
-                // Save to cache with country
-                saveToCache(query, country, formatted);
-                addToSearchHistory(query, country);
-                
+    // Try to get from our GitHub Pages cache first
+    try {
+        // Create filename from query
+        const safeQuery = query.toLowerCase().replace(/[^a-z0-9]+/g, '_').substring(0, 50);
+        const cacheFile = country ? 
+            `news/search/${safeQuery}_${country.toLowerCase()}.json` : 
+            `news/search/${safeQuery}.json`;
+        
+        console.log('📁 Trying cache:', cacheFile);
+        
+        const cacheResponse = await fetch(cacheFile + '?t=' + Date.now());
+        if (cacheResponse.ok) {
+            const data = await cacheResponse.json();
+            if (data.articles && data.articles.length > 0) {
+                displaySearchResults(data.articles);
+                showSuccess(`Loaded from cache (${data.api || 'Guardian'})`);
                 hideLoading();
-                showSuccess(`Found ${formatted.articles.length} fresh articles from ${country || 'all countries'}`);
                 return;
             }
-        } catch (error) {
-            console.log('Proxy failed:', proxyUrl, error.message);
-            continue;
-        }
-    }
-    
-    // If all proxies fail, try loading from GitHub Pages cache
-    try {
-        const filename = query.toLowerCase().replace(/[^a-z0-9]+/g, '_').substring(0, 50);
-        const countrySuffix = country ? `_${country}` : '';
-        const cacheResponse = await fetch(`news/search/${filename}${countrySuffix}.json?t=${Date.now()}`);
-        if (cacheResponse.ok) {
-            const cached = await cacheResponse.json();
-            displaySearchResults(cached.articles || []);
-            showWarning('Using cached version from server');
-            hideLoading();
-            return;
         }
     } catch (e) {
-        console.log('No server cache available');
+        console.log('Cache miss:', e);
     }
     
-    // Final fallback
-    latestNews.innerHTML = '<div class="no-results">Unable to fetch news. Please try again later.</div>';
-    showError('Failed to fetch news');
+    // If no cache, try to get from latest.json
+    try {
+        const latestResponse = await fetch('news/latest.json?t=' + Date.now());
+        if (latestResponse.ok) {
+            const latest = await latestResponse.json();
+            if (latest.articles && latest.articles.length > 0) {
+                // Filter articles by query if needed
+                const filtered = latest.articles.filter(a => 
+                    a.title.toLowerCase().includes(query.toLowerCase()) ||
+                    (a.summary && a.summary.toLowerCase().includes(query.toLowerCase()))
+                );
+                
+                if (filtered.length > 0) {
+                    displaySearchResults(filtered);
+                    showSuccess(`Filtered from latest news`);
+                } else {
+                    displaySearchResults(latest.articles.slice(0, 10));
+                    showSuccess(`Showing latest news`);
+                }
+                hideLoading();
+                return;
+            }
+        }
+    } catch (e) {
+        console.log('Latest fetch failed:', e);
+    }
+    
+    // Final fallback - show sample data
+    const sampleArticles = [
+        {
+            title: `News about: ${query}`,
+            url: 'https://theguardian.com',
+            source: 'The Guardian',
+            date: new Date().toLocaleDateString(),
+            country: country || 'Global',
+            summary: `Latest news and updates about ${query}. Please check back soon for fresh articles.`,
+            image: '',
+            section: 'News'
+        },
+        {
+            title: `Developments in ${query}`,
+            url: 'https://theguardian.com',
+            source: 'The Guardian',
+            date: new Date().toLocaleDateString(),
+            country: country || 'Global',
+            summary: `Stay informed with the latest developments in ${query}.`,
+            image: '',
+            section: 'Updates'
+        }
+    ];
+    
+    displaySearchResults(sampleArticles);
+    showWarning('Showing sample data - real news will appear soon');
     hideLoading();
 }
 
