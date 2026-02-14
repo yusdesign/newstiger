@@ -169,12 +169,12 @@ class GDELTFetcher:
             ("climate change", None),
             ("artificial intelligence", None),
             ("business", None),
-            ("health", "US"),
+            ("health", "RU"),
             ("sports", None),
-            ("election", "US"),
-            ("technology", "US"),
-            ("technology", "GB"),
-            ("technology", "IN")
+            ("election", "RU"),
+            ("technology", "RU"),
+            ("technology", "RU"),
+            ("technology", "RU")
         ]
         
         print("\n3. Fetching popular searches...")
