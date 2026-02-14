@@ -1,0 +1,74 @@
+{
+  "source": "climate_change",
+  "timestamp": "2026-02-14T19:06:10.937744",
+  "total": 6,
+  "articles": [
+    {
+      "title": "Renewable energy reaches record levels worldwide",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.937723",
+      "country": "Global",
+      "section": "Environment",
+      "summary": "Solar and wind power now account for unprecedented share of global electricity generation.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.937730",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Global climate summit concludes with historic agreement - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.937733",
+      "country": "Global",
+      "section": "Environment",
+      "summary": "Nations reach consensus on new measures to combat climate change and reduce emissions.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.937736",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.937739",
+      "country": "Global",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Renewable energy reaches record levels worldwide - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.937741",
+      "country": "Global",
+      "section": "Environment",
+      "summary": "Solar and wind power now account for unprecedented share of global electricity generation.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

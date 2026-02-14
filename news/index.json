@@ -1,6 +1,6 @@
 {
-  "last_update": "$(date -Iseconds)",
-  "status": "fresh",
-  "message": "Fresh start with Guardian API",
-  "api": "Guardian"
+  "last_update": "2026-02-14T19:06:10.939764",
+  "total_articles": 189,
+  "files_created": 27,
+  "message": "Fallback data - run fetch_news.py for real articles"
 }

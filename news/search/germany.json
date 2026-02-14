@@ -1,0 +1,96 @@
+{
+  "source": "germany",
+  "timestamp": "2026-02-14T19:06:10.934799",
+  "total": 8,
+  "articles": [
+    {
+      "title": "Healthcare innovations improve patient outcomes",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.934741",
+      "country": "DE",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.934753",
+      "country": "DE",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.934764",
+      "country": "DE",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.934770",
+      "country": "DE",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.934775",
+      "country": "DE",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.934781",
+      "country": "DE",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.934787",
+      "country": "DE",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.934793",
+      "country": "DE",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

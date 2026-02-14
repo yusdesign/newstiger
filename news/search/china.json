@@ -1,0 +1,96 @@
+{
+  "source": "china",
+  "timestamp": "2026-02-14T19:06:10.935889",
+  "total": 8,
+  "articles": [
+    {
+      "title": "Community leaders launch initiative to support local families",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.935810",
+      "country": "CN",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.935845",
+      "country": "CN",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.935853",
+      "country": "CN",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.935856",
+      "country": "CN",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.935859",
+      "country": "CN",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.935880",
+      "country": "CN",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.935883",
+      "country": "CN",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.935886",
+      "country": "CN",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

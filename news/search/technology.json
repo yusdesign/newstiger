@@ -1,0 +1,96 @@
+{
+  "source": "technology",
+  "timestamp": "2026-02-14T19:06:10.936295",
+  "total": 8,
+  "articles": [
+    {
+      "title": "Cybersecurity experts warn of new phishing tactics",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.936268",
+      "country": "Global",
+      "section": "Technology",
+      "summary": "Security researchers identify sophisticated new methods used by cybercriminals to target businesses.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.936275",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.936279",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.936282",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.936284",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "AI breakthrough promises to revolutionize healthcare - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.936287",
+      "country": "Global",
+      "section": "Technology",
+      "summary": "Researchers develop new artificial intelligence system that can detect diseases earlier than traditional methods.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.936290",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Tech giants announce joint sustainability initiative - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.936292",
+      "country": "Global",
+      "section": "Technology",
+      "summary": "Leading technology companies commit to reducing carbon emissions and promoting green computing.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

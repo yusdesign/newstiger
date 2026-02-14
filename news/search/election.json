@@ -1,0 +1,107 @@
+{
+  "source": "election",
+  "timestamp": "2026-02-14T19:06:10.938315",
+  "total": 9,
+  "articles": [
+    {
+      "title": "Education reform proposals spark public discussion",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.938281",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.938287",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.938291",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.938294",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.938296",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.938303",
+      "country": "Global",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.938308",
+      "country": "Global",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.938310",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 9",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T03:06:10.938313",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

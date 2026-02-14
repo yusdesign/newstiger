@@ -1,0 +1,118 @@
+{
+  "source": "artificial_intelligence",
+  "timestamp": "2026-02-14T19:06:10.937941",
+  "total": 10,
+  "articles": [
+    {
+      "title": "Arts festival celebrates cultural diversity",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T19:06:10.937909",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.937916",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.937919",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.937922",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.937925",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.937928",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.937930",
+      "country": "Global",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.937933",
+      "country": "Global",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 9",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T03:06:10.937935",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 10",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T01:06:10.937938",
+      "country": "Global",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    }
+  ],
+  "api": "guardian_fallback"
+}

@@ -1,6 +1,96 @@
 {
-  "timestamp": "$(date -Iseconds)",
+  "timestamp": "2026-02-14T19:06:10.939558",
   "trends": [
-    {"rank": 1, "title": "Top Stories", "section": "News"}
-  ]
+    {
+      "rank": 1,
+      "title": "Community leaders launch initiative to support local familie",
+      "section": "Society",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 2,
+      "title": "Healthcare innovations improve patient outcomes",
+      "section": "Health",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 3,
+      "title": "Community leaders launch initiative to support local familie",
+      "section": "Society",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 4,
+      "title": "Education reform proposals spark public discussion",
+      "section": "Education",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 5,
+      "title": "Arts festival celebrates cultural diversity",
+      "section": "Culture",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 6,
+      "title": "Arts festival celebrates cultural diversity",
+      "section": "Culture",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 7,
+      "title": "Renewable energy reaches record levels worldwide",
+      "section": "Environment",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 8,
+      "title": "Healthcare innovations improve patient outcomes",
+      "section": "Health",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 9,
+      "title": "Arts festival celebrates cultural diversity",
+      "section": "Culture",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 10,
+      "title": "Arts festival celebrates cultural diversity",
+      "section": "Culture",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 11,
+      "title": "Education reform proposals spark public discussion",
+      "section": "Education",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 12,
+      "title": "Community leaders launch initiative to support local familie",
+      "section": "Society",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 13,
+      "title": "Arts festival celebrates cultural diversity",
+      "section": "Culture",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 14,
+      "title": "Community leaders launch initiative to support local familie",
+      "section": "Society",
+      "date": "2026-02-14"
+    },
+    {
+      "rank": 15,
+      "title": "Cybersecurity experts warn of new phishing tactics",
+      "section": "Technology",
+      "date": "2026-02-14"
+    }
+  ],
+  "source": "guardian_fallback"
 }

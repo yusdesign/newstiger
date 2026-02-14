@@ -1,17 +1,118 @@
 {
-  "timestamp": "$(date -Iseconds)",
-  "total": 5,
+  "source": "russia",
+  "timestamp": "2026-02-14T19:06:10.933603",
+  "total": 10,
   "articles": [
     {
-      "title": "Russia: Latest political developments",
-      "url": "https://www.theguardian.com/world/russia",
+      "title": "Community leaders launch initiative to support local families",
+      "url": "https://www.theguardian.com",
       "source": "The Guardian",
-      "date": "$(date '+%Y-%m-%d')",
+      "date": "2026-02-14T19:06:10.933552",
       "country": "RU",
-      "summary": "Latest news and analysis from Russia.",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
       "image": "",
-      "section": "World"
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Community leaders launch initiative to support local families - Part 2",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T17:06:10.933566",
+      "country": "RU",
+      "section": "Society",
+      "summary": "New program aims to provide resources and assistance to families in need.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 3",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T15:06:10.933572",
+      "country": "RU",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Education reform proposals spark public discussion - Part 4",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T13:06:10.933576",
+      "country": "RU",
+      "section": "Education",
+      "summary": "Citizens and educators debate proposed changes to national education system.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Russian scientists make breakthrough in Arctic research - Part 5",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T11:06:10.933583",
+      "country": "RU",
+      "section": "Science",
+      "summary": "A team of Russian researchers has discovered new data about climate change impacts in the Arctic region.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Healthcare innovations improve patient outcomes - Part 6",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T09:06:10.933586",
+      "country": "RU",
+      "section": "Health",
+      "summary": "New technologies and treatments are helping hospitals provide better care.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Arts festival celebrates cultural diversity - Part 7",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T07:06:10.933589",
+      "country": "RU",
+      "section": "Culture",
+      "summary": "Annual event brings together artists and performers from diverse backgrounds.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Cultural exchange program brings Russian artists to global stage - Part 8",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T05:06:10.933592",
+      "country": "RU",
+      "section": "Culture",
+      "summary": "Russian performers and artists are participating in an international cultural exchange program.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Cultural exchange program brings Russian artists to global stage - Part 9",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T03:06:10.933595",
+      "country": "RU",
+      "section": "Culture",
+      "summary": "Russian performers and artists are participating in an international cultural exchange program.",
+      "image": "",
+      "api": "guardian_fallback"
+    },
+    {
+      "title": "Russian scientists make breakthrough in Arctic research - Part 10",
+      "url": "https://www.theguardian.com",
+      "source": "The Guardian",
+      "date": "2026-02-14T01:06:10.933598",
+      "country": "RU",
+      "section": "Science",
+      "summary": "A team of Russian researchers has discovered new data about climate change impacts in the Arctic region.",
+      "image": "",
+      "api": "guardian_fallback"
     }
   ],
-  "api": "Guardian"
+  "api": "guardian_fallback"
 }
