@@ -3,36 +3,36 @@
   "total": 3,
   "articles": [
     {
-      "title": "News from RU - Update 0",
+      "title": "News from BR - Update 0",
       "url": "https://example.com",
-      "source": "RU News",
+      "source": "BR News",
       "date": "2026-02-14 15:55",
-      "country": "RU",
-      "summary": "Sample news from RU while API is unavailable",
+      "country": "BR",
+      "summary": "Sample news from BR while API is unavailable",
       "themes": [
         "regional",
         "news"
       ]
     },
     {
-      "title": "News from RU - Update 1",
+      "title": "News from BR - Update 1",
       "url": "https://example.com",
-      "source": "RU News",
+      "source": "BR News",
       "date": "2026-02-14 15:55",
-      "country": "RU",
-      "summary": "Sample news from RU while API is unavailable",
+      "country": "BR",
+      "summary": "Sample news from BR while API is unavailable",
       "themes": [
         "regional",
         "news"
       ]
     },
     {
-      "title": "News from RU - Update 2",
+      "title": "News from BR - Update 2",
       "url": "https://example.com",
-      "source": "RU News",
+      "source": "BR News",
       "date": "2026-02-14 15:55",
-      "country": "RU",
-      "summary": "Sample news from RU while API is unavailable",
+      "country": "BR",
+      "summary": "Sample news from BR while API is unavailable",
       "themes": [
         "regional",
         "news"
