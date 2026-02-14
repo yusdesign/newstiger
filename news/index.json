@@ -1,5 +1,5 @@
 {
-  "last_update": "2026-02-14T14:21:43.446486",
+  "last_update": "2026-02-14T15:06:30.410648",
   "trending": "trending.json",
   "latest": "latest.json",
   "countries": [
@@ -9,7 +9,15 @@
     "GB",
     "DE",
     "FR",
-    "CN"
+    "CN",
+    "JP",
+    "IN",
+    "BR"
   ],
-  "searches": 14
+  "searches": 23,
+  "stats": {
+    "requests_made": 31,
+    "rate_limited": 7,
+    "successful": 24
+  }
 }

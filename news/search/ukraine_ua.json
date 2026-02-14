@@ -1,6 +1,7 @@
 {
   "query": "Ukraine",
-  "timestamp": "2026-02-14T14:21:06.428942",
+  "country": "UA",
+  "timestamp": "2026-02-14T14:55:38.213947",
   "total": 20,
   "articles": [
     {
@@ -54,16 +55,6 @@
       "themes": []
     },
     {
-      "title": "  Головорезы Зеленского . Произошедшее на Украине шокировало журналиста",
-      "url": "https://ria.ru/20260208/ukraina-2073075626.html",
-      "source": "ria.ru",
-      "date": "2026-02-08 T1:94",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "Пророссийское подполье срывает логистику ВСУ по всей Украине",
       "url": "https://ria.ru/20260129/podpole-2070894503.html",
       "source": "ria.ru",
@@ -74,10 +65,10 @@
       "themes": []
     },
     {
-      "title": "СМИ раскрыли планы ЕС по урегулированию на Украине",
-      "url": "https://ria.ru/20260209/ukraina-2073318491.html",
+      "title": "  Головорезы Зеленского . Произошедшее на Украине шокировало журналиста",
+      "url": "https://ria.ru/20260208/ukraina-2073075626.html",
       "source": "ria.ru",
-      "date": "2026-02-09 T1:84",
+      "date": "2026-02-08 T1:94",
       "country": "Russia",
       "language": "Russian",
       "summary": "",
@@ -98,6 +89,16 @@
       "url": "https://ria.ru/20260128/ukraina-2070685887.html",
       "source": "ria.ru",
       "date": "2026-01-28 T0:41",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "СМИ раскрыли планы ЕС по урегулированию на Украине",
+      "url": "https://ria.ru/20260209/ukraina-2073318491.html",
+      "source": "ria.ru",
+      "date": "2026-02-09 T1:84",
       "country": "Russia",
       "language": "Russian",
       "summary": "",
@@ -164,16 +165,6 @@
       "themes": []
     },
     {
-      "title": "УКАЗ ПРЕЗИДЕНТА УКРАЇНИ - Рада національної безпеки і оборони України",
-      "url": "https://rnbo.gov.ua/ua/Ukazy/7415.html",
-      "source": "rnbo.gov.ua",
-      "date": "2026-02-10 T2:31",
-      "country": "Ukraine",
-      "language": "Ukrainian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "В МИД назвали лучшую гарантию безопасности Украины",
       "url": "https://ria.ru/20260131/ukraina-2071378501.html",
       "source": "ria.ru",
@@ -190,6 +181,16 @@
       "date": "2026-01-30 T0:93",
       "country": "Russia",
       "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "УКАЗ ПРЕЗИДЕНТА УКРАЇНИ - Рада національної безпеки і оборони України",
+      "url": "https://rnbo.gov.ua/ua/Ukazy/7415.html",
+      "source": "rnbo.gov.ua",
+      "date": "2026-02-10 T2:31",
+      "country": "Ukraine",
+      "language": "Ukrainian",
       "summary": "",
       "themes": []
     },

@@ -1,6 +1,7 @@
 {
   "query": "health",
-  "timestamp": "2026-02-14T14:21:34.137135",
+  "country": null,
+  "timestamp": "2026-02-14T15:03:50.812900",
   "total": 15,
   "articles": [
     {

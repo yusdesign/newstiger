@@ -1,6 +1,7 @@
 {
   "query": "election",
-  "timestamp": "2026-02-14T14:21:42.443985",
+  "country": null,
+  "timestamp": "2026-02-14T15:04:01.204444",
   "total": 15,
   "articles": [
     {
