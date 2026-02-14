@@ -1,126 +1,90 @@
 #!/usr/bin/env python3
 """
-News Fetcher using The Guardian API - Completely free, no limits!
-This replaces the old GDELT fetcher entirely.
+Guardian News Fetcher - Actually fetches real data
 """
 
 import requests
 import json
 import os
 import time
-import random
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
+
+# Your working API key
+API_KEY = "1f962fc0-b843-4a63-acb9-770f4c24a86e"
+BASE_URL = "https://content.guardianapis.com"
 
 class GuardianFetcher:
     def __init__(self):
-        # Guardian API
-        self.api_key = os.environ.get('GUARDIAN_API_KEY', '')
-        self.base_url = "https://content.guardianapis.com"
-        self.search_url = f"{self.base_url}/search"
-        
-        # Output directories
+        self.api_key = API_KEY
         self.output_dir = Path("news")
         self.search_dir = self.output_dir / "search"
         
         # Create directories
         self.output_dir.mkdir(exist_ok=True)
         self.search_dir.mkdir(exist_ok=True)
-        
-        # Statistics
-        self.stats = {
-            'api_calls': 0,
-            'articles_fetched': 0,
-            'errors': 0
-        }
-        
-        # Country to section mapping
-        self.country_sections = {
-            'RU': 'world/russia',
-            'UA': 'world/ukraine',
-            'US': 'us-news',
-            'GB': 'uk-news',
-            'DE': 'world/germany',
-            'FR': 'world/france',
-            'JP': 'world/japan',
-            'IN': 'world/india',
-            'CN': 'world/china',
-            'BR': 'world/brazil',
-            'AU': 'australia-news',
-            'CA': 'world/canada'
-        }
-        
-        # Category to section mapping
-        self.category_sections = {
-            'technology': 'technology',
-            'business': 'business',
-            'sports': 'sport',
-            'science': 'science',
-            'health': 'wellness',
-            'climate': 'environment',
-            'politics': 'politics',
-            'culture': 'culture'
-        }
     
-    def fetch_guardian(self, query=None, section=None, page_size=20, pages=1, tag=None):
-        """
-        Fetch from Guardian API
-        This is our primary and only news source now
-        """
+    def fetch_section(self, section, page_size=20):
+        """Fetch articles from a specific section"""
+        url = f"{BASE_URL}/search"
         params = {
-            'page-size': min(page_size, 50),  # Guardian max is 50
-            'page': pages,
-            'show-fields': 'headline,trailText,thumbnail,short-url,bodyText',
-            'show-tags': 'contributor,publication',
-            'show-elements': 'image',
-            'show-refinements': 'all',
+            'section': section,
+            'page-size': page_size,
+            'show-fields': 'headline,trailText,thumbnail,bodyText',
+            'show-tags': 'contributor',
             'order-by': 'newest',
-            'format': 'json'
+            'api-key': self.api_key
         }
         
-        if query:
-            params['q'] = query
-        if section:
-            params['section'] = section
-        if tag:
-            params['tag'] = tag
-        if self.api_key:
-            params['api-key'] = self.api_key
+        print(f"  📰 Fetching section: {section}")
         
         try:
-            print(f"  📰 Fetching: {query or section}")
-            response = requests.get(self.search_url, params=params, timeout=15)
-            self.stats['api_calls'] += 1
-            
+            response = requests.get(url, params=params, timeout=15)
             if response.status_code == 200:
                 data = response.json()
-                articles = self._format_articles(data, query or section)
-                self.stats['articles_fetched'] += len(articles)
-                return articles
+                return self._format_articles(data, section)
             else:
-                print(f"  ⚠️ Guardian error: {response.status_code} - {response.text}")
-                self.stats['errors'] += 1
-                return self._generate_fallback(query or section)
-                
+                print(f"  ⚠️ Error {response.status_code}")
+                return None
         except Exception as e:
-            print(f"  ⚠️ Guardian exception: {e}")
-            self.stats['errors'] += 1
-            return self._generate_fallback(query or section)
+            print(f"  ⚠️ Exception: {e}")
+            return None
+    
+    def fetch_search(self, query, page_size=20):
+        """Search for articles by query"""
+        url = f"{BASE_URL}/search"
+        params = {
+            'q': query,
+            'page-size': page_size,
+            'show-fields': 'headline,trailText,thumbnail,bodyText',
+            'show-tags': 'contributor',
+            'order-by': 'relevance',
+            'api-key': self.api_key
+        }
+        
+        print(f"  🔍 Searching: {query}")
+        
+        try:
+            response = requests.get(url, params=params, timeout=15)
+            if response.status_code == 200:
+                data = response.json()
+                return self._format_articles(data, query)
+            else:
+                return None
+        except Exception as e:
+            print(f"  ⚠️ Exception: {e}")
+            return None
     
     def _format_articles(self, data, source):
-        """Format Guardian articles for JSON storage"""
+        """Format Guardian articles"""
         articles = []
         response = data.get('response', {})
+        results = response.get('results', [])
         
-        for result in response.get('results', []):
+        print(f"     Found {len(results)} articles")
+        
+        for result in results:
             fields = result.get('fields', {})
-            
-            # Get publication date
-            web_date = result.get('webPublicationDate', '')
-            
-            # Extract country from section
-            section_id = result.get('sectionId', '')
-            country = self._section_to_country(section_id)
             
             # Get body text preview
             body = fields.get('bodyText', '')
@@ -130,17 +94,16 @@ class GuardianFetcher:
                 'title': fields.get('headline', result.get('webTitle', 'No title')),
                 'url': result.get('webUrl', '#'),
                 'source': 'The Guardian',
-                'date': self._format_date(web_date),
-                'country': country,
-                'section': result.get('sectionName', 'General'),
-                'section_id': section_id,
+                'date': result.get('webPublicationDate', ''),
+                'country': self._section_to_country(result.get('sectionId', '')),
+                'section': result.get('sectionName', 'News'),
+                'section_id': result.get('sectionId', ''),
                 'summary': summary.replace('<p>', '').replace('</p>', '').strip(),
                 'image': fields.get('thumbnail', ''),
                 'api': 'guardian',
                 'id': result.get('id', '')
             }
             
-            # Only add if it has a title
             if article['title'] and article['title'] != 'No title':
                 articles.append(article)
         
@@ -153,7 +116,7 @@ class GuardianFetcher:
         }
     
     def _section_to_country(self, section_id):
-        """Map Guardian section to country code"""
+        """Map section to country code"""
         country_map = {
             'us-news': 'US',
             'uk-news': 'GB',
@@ -165,188 +128,138 @@ class GuardianFetcher:
             'world/japan': 'JP',
             'world/india': 'IN',
             'world/china': 'CN',
-            'world/brazil': 'BR',
-            'world/canada': 'CA',
             'world/europe-news': 'EU',
             'world/middleeast': 'ME'
         }
         return country_map.get(section_id, 'Global')
     
-    def _generate_fallback(self, query):
-        """Generate fallback data when API fails"""
-        print(f"  📦 Generating fallback for: {query}")
-        
-        articles = []
-        topics = ['technology', 'business', 'politics', 'sports', 'science']
-        
-        for i in range(5):
-            articles.append({
-                'title': f"{query.title()} - Latest News Update",
-                'url': 'https://theguardian.com',
-                'source': 'The Guardian',
-                'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
-                'country': self._extract_country_from_query(query),
-                'section': 'General',
-                'summary': f"Latest developments in {query}. Please check back soon for fresh articles.",
-                'image': '',
-                'api': 'guardian_fallback',
-                'id': f'fallback-{i}'
-            })
-        
-        return {
-            'source': query,
-            'timestamp': datetime.now().isoformat(),
-            'total': len(articles),
-            'articles': articles,
-            'api': 'Guardian (Fallback)'
-        }
-    
-    def _extract_country_from_query(self, query):
-        """Extract country code from query"""
-        query_lower = query.lower()
-        for code in ['RU', 'UA', 'US', 'GB', 'DE', 'FR']:
-            if code.lower() in query_lower or query_lower.startswith(code.lower()):
-                return code
-        return 'Global'
-    
-    def _format_date(self, date_str):
-        """Format ISO date to readable"""
-        if not date_str:
-            return 'Unknown'
-        try:
-            dt = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
-            return dt.strftime('%Y-%m-%d %H:%M')
-        except:
-            return date_str
-    
     def save_json(self, data, filename):
         """Save data as JSON"""
         filepath = self.output_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(data, f, indent=2, ensure_ascii=False)
         print(f"  💾 Saved: {filename}")
     
     def save_search(self, data, name):
-        """Save search results with safe filename"""
+        """Save search results"""
         safe_name = name.lower().replace(' ', '_')
-        safe_name = ''.join(c for c in safe_name if c.isalnum() or c == '_')[:50]
+        safe_name = ''.join(c for c in safe_name if c.isalnum() or c == '_')[:40]
         filename = f"{safe_name}.json"
         
         filepath = self.search_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+            json.dump(data, f, indent=2, ensure_ascii=False)
         print(f"  💾 Saved search: {filename}")
     
     def run(self):
-        """Main fetch routine - Guardian only"""
+        """Main fetch routine"""
         print(f"\n{'='*60}")
-        print(f"🚀 Starting Guardian News Fetch at {datetime.now()}")
-        print(f"📊 Guardian API: Unlimited • No rate limits")
+        print(f"🚀 Fetching Guardian News at {datetime.now()}")
         print(f"{'='*60}\n")
         
-        # 1. RUSSIA NEWS - Most important for your bot
-        print("\n🇷🇺 PHASE 1: RUSSIA NEWS")
-        russia_news = self.fetch_guardian(section='world/russia', page_size=30)
-        if russia_news:
-            self.save_search(russia_news, 'russia')
-            # Also save as country-specific
-            self.save_search(russia_news, 'ru')
+        # 1. RUSSIA NEWS
+        print("\n🇷🇺 Russia News")
+        russia = self.fetch_section('world/russia', 25)
+        if russia:
+            self.save_search(russia, 'russia')
         
-        time.sleep(2)
+        time.sleep(1)
         
         # 2. UKRAINE NEWS
-        print("\n🇺🇦 PHASE 2: UKRAINE NEWS")
-        ukraine_news = self.fetch_guardian(section='world/ukraine', page_size=25)
-        if ukraine_news:
-            self.save_search(ukraine_news, 'ukraine')
-            self.save_search(ukraine_news, 'ua')
+        print("\n🇺🇦 Ukraine News")
+        ukraine = self.fetch_section('world/ukraine', 25)
+        if ukraine:
+            self.save_search(ukraine, 'ukraine')
         
-        time.sleep(2)
+        time.sleep(1)
         
-        # 3. ALL COUNTRY SECTIONS
-        print("\n🌍 PHASE 3: COUNTRY NEWS")
-        for country_code, section in self.country_sections.items():
-            print(f"\n  📍 {country_code} - {section}")
-            news = self.fetch_guardian(section=section, page_size=20)
-            if news:
-                self.save_search(news, country_code.lower())
-            time.sleep(random.uniform(1, 3))
+        # 3. US NEWS
+        print("\n🇺🇸 US News")
+        us = self.fetch_section('us-news', 25)
+        if us:
+            self.save_search(us, 'us')
         
-        # 4. CATEGORY NEWS
-        print("\n📰 PHASE 4: CATEGORY NEWS")
-        for category, section in self.category_sections.items():
-            print(f"\n  📌 {category}")
-            news = self.fetch_guardian(section=section, page_size=25)
-            if news:
-                self.save_search(news, category)
-                # Also save as JSON file for direct access
-                self.save_json(news, f"{category}.json")
-            time.sleep(random.uniform(1, 3))
+        time.sleep(1)
         
-        # 5. POPULAR SEARCHES
-        print("\n🔍 PHASE 5: POPULAR SEARCHES")
-        searches = [
-            "artificial intelligence",
-            "climate crisis",
-            "technology",
-            "business",
-            "sports",
-            "science",
-            "health",
-            "politics",
-            "culture",
-            "economy"
-        ]
+        # 4. UK NEWS
+        print("\n🇬🇧 UK News")
+        uk = self.fetch_section('uk-news', 25)
+        if uk:
+            self.save_search(uk, 'gb')
         
-        for query in searches:
-            print(f"\n  🔎 {query}")
-            news = self.fetch_guardian(query=query, page_size=20)
-            if news:
-                self.save_search(news, query.replace(' ', '_'))
-            time.sleep(random.uniform(1, 3))
+        time.sleep(1)
         
-        # 6. LATEST NEWS (for homepage)
-        print("\n📰 PHASE 6: LATEST NEWS")
-        latest = self.fetch_guardian(page_size=50)  # Get latest 50 articles
-        if latest:
-            self.save_json(latest, "latest.json")
+        # 5. TECHNOLOGY
+        print("\n💻 Technology")
+        tech = self.fetch_section('technology', 25)
+        if tech:
+            self.save_search(tech, 'technology')
+        
+        time.sleep(1)
+        
+        # 6. WORLD NEWS (latest)
+        print("\n🌍 World News")
+        world = self.fetch_section('world', 30)
+        if world:
+            self.save_json(world, 'latest.json')
+        
+        time.sleep(1)
         
         # 7. TRENDING (based on most recent)
-        print("\n📈 PHASE 7: TRENDING TOPICS")
-        if latest and latest.get('articles'):
+        print("\n📈 Trending")
+        if world and world.get('articles'):
             trends = []
-            for i, article in enumerate(latest['articles'][:20]):
+            for i, article in enumerate(world['articles'][:15]):
                 trends.append({
                     'rank': i + 1,
                     'title': article['title'][:60],
                     'section': article['section'],
-                    'date': article['date'][:10],
-                    'url': article['url']
+                    'date': article['date'][:10]
                 })
             
             trending_data = {
                 'timestamp': datetime.now().isoformat(),
-                'total': len(trends),
                 'trends': trends,
                 'source': 'Guardian'
             }
-            self.save_json(trending_data, "trending.json")
+            self.save_json(trending_data, 'trending.json')
         
-        # 8. INDEX FILE
-        print("\n📋 PHASE 8: CREATING INDEX")
+        # 8. POPULAR SEARCHES
+        print("\n🔍 Popular Searches")
+        searches = [
+            'climate change',
+            'artificial intelligence',
+            'business',
+            'sports',
+            'health',
+            'politics'
+        ]
+        
+        for query in searches:
+            print(f"\n  {query}")
+            results = self.fetch_search(query, 15)
+            if results:
+                self.save_search(results, query.replace(' ', '_'))
+            time.sleep(1)
+        
+        # 9. INDEX
+        print("\n📋 Creating Index")
         index = {
             'last_update': datetime.now().isoformat(),
-            'stats': self.stats,
-            'countries': list(self.country_sections.keys()),
-            'categories': list(self.category_sections.keys()),
-            'searches': searches,
-            'message': 'Powered by The Guardian API'
+            'message': 'Fresh Guardian news',
+            'total_articles': sum(
+                len(russia.get('articles', [])) if russia else 0,
+                len(ukraine.get('articles', [])) if ukraine else 0,
+                len(us.get('articles', [])) if us else 0,
+                len(uk.get('articles', [])) if uk else 0,
+                len(tech.get('articles', [])) if tech else 0,
+                len(world.get('articles', [])) if world else 0
+            )
         }
-        self.save_json(index, "index.json")
+        self.save_json(index, 'index.json')
         
         print(f"\n{'='*60}")
-        print(f"✅ Fetch complete at {datetime.now()}")
-        print(f"📊 Stats: {self.stats}")
+        print(f"✅ Done at {datetime.now()}")
         print(f"{'='*60}")
 
 if __name__ == "__main__":
