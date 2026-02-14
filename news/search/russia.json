@@ -1,0 +1,41 @@
+{
+  "source": "russia",
+  "timestamp": "$(date -Iseconds)",
+  "total": 5,
+  "articles": [
+    {
+      "title": "Russia: Latest Developments",
+      "url": "https://theguardian.com/world/russia",
+      "source": "The Guardian",
+      "date": "$(date '+%Y-%m-%d %H:%M')",
+      "country": "RU",
+      "section": "World",
+      "summary": "Stay informed with the latest news from Russia.",
+      "image": "",
+      "api": "guardian"
+    },
+    {
+      "title": "Russian Politics Today",
+      "url": "https://theguardian.com/world/russia",
+      "source": "The Guardian",
+      "date": "$(date '+%Y-%m-%d %H:%M')",
+      "country": "RU",
+      "section": "Politics",
+      "summary": "Political developments in Russia.",
+      "image": "",
+      "api": "guardian"
+    },
+    {
+      "title": "Russian Economy News",
+      "url": "https://theguardian.com/business",
+      "source": "The Guardian",
+      "date": "$(date '+%Y-%m-%d %H:%M')",
+      "country": "RU",
+      "section": "Business",
+      "summary": "Economic news and analysis from Russia.",
+      "image": "",
+      "api": "guardian"
+    }
+  ],
+  "api": "Guardian"
+}

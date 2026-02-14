@@ -1,0 +1,9 @@
+{
+  "timestamp": "$(date -Iseconds)",
+  "trends": [
+    {"rank": 1, "title": "Welcome to NewsTiger", "section": "News", "date": "2025-02-15"},
+    {"rank": 2, "title": "Powered by Guardian API", "section": "Technology", "date": "2025-02-15"},
+    {"rank": 3, "title": "Fresh news every 2 hours", "section": "Updates", "date": "2025-02-15"}
+  ],
+  "source": "Guardian"
+}

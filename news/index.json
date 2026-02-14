@@ -1,0 +1,6 @@
+{
+  "last_update": "$(date -Iseconds)",
+  "status": "fresh",
+  "message": "Fresh start with Guardian API",
+  "api": "Guardian"
+}
