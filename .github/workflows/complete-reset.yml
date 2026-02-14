@@ -1,0 +1,177 @@
+name: 🔥 Complete Reset - Fix Everything
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "FIX IT" to confirm'
+        required: true
+        default: ''
+
+jobs:
+  reset-everything:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Verify confirmation
+        run: |
+          if [[ "${{ github.event.inputs.confirm }}" != "FIX IT" ]]; then
+            echo "❌ Type 'FIX IT' to confirm"
+            exit 1
+          fi
+      
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: COMPLETELY REMOVE ALL NEWS FILES
+        run: |
+          echo "🔥 Removing all news files..."
+          rm -rf news/
+          rm -f last_bot_update.txt
+          echo "✅ All old files removed"
+      
+      - name: Create fresh directory structure
+        run: |
+          mkdir -p news/search
+          echo "📁 Created fresh directories"
+      
+      - name: Create initial Guardian data files
+        run: |
+          # Create index.json
+          cat > news/index.json << 'EOF'
+          {
+            "last_update": "$(date -Iseconds)",
+            "status": "fresh",
+            "message": "Fresh start with Guardian API",
+            "api": "Guardian"
+          }
+          EOF
+          
+          # Create trending.json
+          cat > news/trending.json << 'EOF'
+          {
+            "timestamp": "$(date -Iseconds)",
+            "trends": [
+              {"rank": 1, "title": "Welcome to NewsTiger", "section": "News", "date": "2025-02-15"},
+              {"rank": 2, "title": "Powered by Guardian API", "section": "Technology", "date": "2025-02-15"},
+              {"rank": 3, "title": "Fresh news every 2 hours", "section": "Updates", "date": "2025-02-15"}
+            ],
+            "source": "Guardian"
+          }
+          EOF
+          
+          # Create latest.json
+          cat > news/latest.json << 'EOF'
+          {
+            "timestamp": "$(date -Iseconds)",
+            "total": 3,
+            "articles": [
+              {
+                "title": "Welcome to NewsTiger",
+                "url": "https://theguardian.com",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "Global",
+                "section": "Welcome",
+                "summary": "NewsTiger now uses The Guardian API for reliable, unlimited news.",
+                "image": "",
+                "api": "guardian"
+              },
+              {
+                "title": "Russia News Available",
+                "url": "https://theguardian.com/world/russia",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "RU",
+                "section": "World",
+                "summary": "Get the latest news about Russia from The Guardian.",
+                "image": "",
+                "api": "guardian"
+              },
+              {
+                "title": "Technology Updates",
+                "url": "https://theguardian.com/technology",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "Global",
+                "section": "Technology",
+                "summary": "Latest technology news and updates.",
+                "image": "",
+                "api": "guardian"
+              }
+            ],
+            "api": "Guardian"
+          }
+          EOF
+          
+          # Create Russia news file
+          cat > news/search/russia.json << 'EOF'
+          {
+            "source": "russia",
+            "timestamp": "$(date -Iseconds)",
+            "total": 5,
+            "articles": [
+              {
+                "title": "Russia: Latest Developments",
+                "url": "https://theguardian.com/world/russia",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "RU",
+                "section": "World",
+                "summary": "Stay informed with the latest news from Russia.",
+                "image": "",
+                "api": "guardian"
+              },
+              {
+                "title": "Russian Politics Today",
+                "url": "https://theguardian.com/world/russia",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "RU",
+                "section": "Politics",
+                "summary": "Political developments in Russia.",
+                "image": "",
+                "api": "guardian"
+              },
+              {
+                "title": "Russian Economy News",
+                "url": "https://theguardian.com/business",
+                "source": "The Guardian",
+                "date": "$(date '+%Y-%m-%d %H:%M')",
+                "country": "RU",
+                "section": "Business",
+                "summary": "Economic news and analysis from Russia.",
+                "image": "",
+                "api": "guardian"
+              }
+            ],
+            "api": "Guardian"
+          }
+          EOF
+          
+          echo "✅ Created initial data files"
+      
+      - name: Show created files
+        run: |
+          echo "📁 Files created:"
+          find news -type f | sort
+          echo ""
+          echo "📊 Total files: $(find news -type f | wc -l)"
+      
+      - name: Commit fresh start
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add news/
+          git add -f last_bot_update.txt 2>/dev/null || true
+          
+          git commit -m "🔥 Complete reset: Fresh start with Guardian API"
+          git push --force origin main
+          
+          echo "✅ Fresh files committed and pushed"
