@@ -6,6 +6,11 @@ on:
     - cron: '0 * * * *'
   # Allow manual trigger
   workflow_dispatch:
+  # Run on push to main (for testing)
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/fetch_news.py'
 
 jobs:
   fetch-news:
@@ -27,8 +32,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
       
+      - name: Create news directories
+        run: |
+          mkdir -p news/search
+          echo "{}" > news/index.json
+      
       - name: Fetch GDELT news
         run: python scripts/fetch_news.py
+      
+      - name: Verify trending.json was created
+        run: |
+          if [ ! -f news/trending.json ]; then
+            echo "Creating default trending.json"
+            echo '{"trends": [], "timestamp": "'$(date -Iseconds)'"}' > news/trending.json
+          fi
       
       - name: Commit and push changes
         run: |
