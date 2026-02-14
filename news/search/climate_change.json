@@ -1,6 +1,6 @@
 {
   "query": "climate change",
-  "timestamp": "2026-02-14T13:40:56.217458",
+  "timestamp": "2026-02-14T14:21:22.332635",
   "total": 15,
   "articles": [
     {
@@ -84,20 +84,20 @@
       "themes": []
     },
     {
-      "title": "지구 뜨거워지면 우리 동네는 ?… 기상청  기후변화 상황지도  공개",
-      "url": "https://www.dongascience.com:443/ko/news/75647",
+      "title": "기후 정책 기준  국가 기후변화 표준시나리오  하나로 통일",
+      "url": "http://www.dongascience.com/ko/news/75201",
       "source": "dongascience.com",
-      "date": "2026-02-10 T0:63",
+      "date": "2026-01-20 T0:54",
       "country": "South Korea",
       "language": "Korean",
       "summary": "",
       "themes": []
     },
     {
-      "title": "기후 정책 기준  국가 기후변화 표준시나리오  하나로 통일",
-      "url": "http://www.dongascience.com/ko/news/75201",
+      "title": "지구 뜨거워지면 우리 동네는 ?… 기상청  기후변화 상황지도  공개",
+      "url": "https://www.dongascience.com:443/ko/news/75647",
       "source": "dongascience.com",
-      "date": "2026-01-20 T0:54",
+      "date": "2026-02-10 T0:63",
       "country": "South Korea",
       "language": "Korean",
       "summary": "",

@@ -1,6 +1,6 @@
 {
   "query": "Ukraine",
-  "timestamp": "2026-02-14T12:33:07.563990",
+  "timestamp": "2026-02-14T14:21:06.428942",
   "total": 20,
   "articles": [
     {
@@ -10,26 +10,6 @@
       "date": "2026-01-27 T1:54",
       "country": "Lithuania",
       "language": "Lithuanian",
-      "summary": "",
-      "themes": []
-    },
-    {
-      "title": "  Головорезы Зеленского . Произошедшее на Украине шокировало журналиста",
-      "url": "https://ria.ru/20260208/ukraina-2073075626.html",
-      "source": "ria.ru",
-      "date": "2026-02-08 T1:94",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
-      "title": "СМИ раскрыли планы ЕС по урегулированию на Украине",
-      "url": "https://ria.ru/20260209/ukraina-2073318491.html",
-      "source": "ria.ru",
-      "date": "2026-02-09 T1:84",
-      "country": "Russia",
-      "language": "Russian",
       "summary": "",
       "themes": []
     },
@@ -74,6 +54,16 @@
       "themes": []
     },
     {
+      "title": "  Головорезы Зеленского . Произошедшее на Украине шокировало журналиста",
+      "url": "https://ria.ru/20260208/ukraina-2073075626.html",
+      "source": "ria.ru",
+      "date": "2026-02-08 T1:94",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
       "title": "Пророссийское подполье срывает логистику ВСУ по всей Украине",
       "url": "https://ria.ru/20260129/podpole-2070894503.html",
       "source": "ria.ru",
@@ -84,12 +74,12 @@
       "themes": []
     },
     {
-      "title": "УКАЗ ПРЕЗИДЕНТА УКРАЇНИ - Рада національної безпеки і оборони України",
-      "url": "https://rnbo.gov.ua/ua/Ukazy/7415.html",
-      "source": "rnbo.gov.ua",
-      "date": "2026-02-10 T2:31",
-      "country": "Ukraine",
-      "language": "Ukrainian",
+      "title": "СМИ раскрыли планы ЕС по урегулированию на Украине",
+      "url": "https://ria.ru/20260209/ukraina-2073318491.html",
+      "source": "ria.ru",
+      "date": "2026-02-09 T1:84",
+      "country": "Russia",
+      "language": "Russian",
       "summary": "",
       "themes": []
     },
@@ -144,16 +134,6 @@
       "themes": []
     },
     {
-      "title": "  Гнев растет : на Украине рассказали , кто готовится свергнуть Зеленского",
-      "url": "https://ria.ru/20260209/zelenskiy-2073097308.html",
-      "source": "ria.ru",
-      "date": "2026-02-09 T0:14",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "ВС России поразили объекты энергетики , работающие на ВПК Украины",
       "url": "https://ria.ru/20260114/voennye-2067780050.html",
       "source": "ria.ru",
@@ -184,6 +164,16 @@
       "themes": []
     },
     {
+      "title": "УКАЗ ПРЕЗИДЕНТА УКРАЇНИ - Рада національної безпеки і оборони України",
+      "url": "https://rnbo.gov.ua/ua/Ukazy/7415.html",
+      "source": "rnbo.gov.ua",
+      "date": "2026-02-10 T2:31",
+      "country": "Ukraine",
+      "language": "Ukrainian",
+      "summary": "",
+      "themes": []
+    },
+    {
       "title": "В МИД назвали лучшую гарантию безопасности Украины",
       "url": "https://ria.ru/20260131/ukraina-2071378501.html",
       "source": "ria.ru",
@@ -198,6 +188,16 @@
       "url": "https://ria.ru/20260130/udary-2071189932.html",
       "source": "ria.ru",
       "date": "2026-01-30 T0:93",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "На Украине два миллиона мужчин числятся в розыске по линии военкоматов",
+      "url": "https://ria.ru/20260114/ukraina-2067822066.html",
+      "source": "ria.ru",
+      "date": "2026-01-14 T1:21",
       "country": "Russia",
       "language": "Russian",
       "summary": "",

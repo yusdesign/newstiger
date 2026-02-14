@@ -1,6 +1,6 @@
 {
   "query": "Russia",
-  "timestamp": "2026-02-14T13:40:16.713493",
+  "timestamp": "2026-02-14T14:20:59.636938",
   "total": 20,
   "articles": [
     {
@@ -44,22 +44,22 @@
       "themes": []
     },
     {
-      "title": "Медведев назвал Россию и Монголию близкими соседями",
-      "url": "https://ria.ru/20260210/medvedev-2073494471.html",
-      "source": "ria.ru",
-      "date": "2026-02-10 T1:51",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "俄外长 ： 俄罗斯准备在达成伊朗核计划协议过程中发挥关键作用",
       "url": "https://sputniknews.cn/20260130/1069536036.html",
       "source": "sputniknews.cn",
       "date": "2026-01-29 T2:11",
       "country": "China",
       "language": "Chinese",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "Медведев назвал Россию и Монголию близкими соседями",
+      "url": "https://ria.ru/20260210/medvedev-2073494471.html",
+      "source": "ria.ru",
+      "date": "2026-02-10 T1:51",
+      "country": "Russia",
+      "language": "Russian",
       "summary": "",
       "themes": []
     },
@@ -174,30 +174,30 @@
       "themes": []
     },
     {
-      "title": "СМИ : ЕС хочет внести порты в третьих странах в санкционные списки по России",
-      "url": "https://ria.ru/20260209/es-2073281425.html",
-      "source": "ria.ru",
-      "date": "2026-02-09 T1:63",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
-      "title": "Участник покушения на генерала Алексеева накопил долги в России",
-      "url": "https://ria.ru/20260208/pokushenie-2073032444.html",
-      "source": "ria.ru",
-      "date": "2026-02-08 T1:40",
-      "country": "Russia",
-      "language": "Russian",
-      "summary": "",
-      "themes": []
-    },
-    {
       "title": "Россия ожидает сдержанности в ситуации вокруг Ирана , заявил Песков",
       "url": "https://ria.ru/20260126/rossija-2070285158.html",
       "source": "ria.ru",
       "date": "2026-01-26 T0:83",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "Медведев рассказал , почему не всем школьникам нравится электронный дневник",
+      "url": "https://ria.ru/20260128/medvedev-2070762089.html",
+      "source": "ria.ru",
+      "date": "2026-01-28 T1:11",
+      "country": "Russia",
+      "language": "Russian",
+      "summary": "",
+      "themes": []
+    },
+    {
+      "title": "Франция работает над новыми санкциями против России на уровне ЕС",
+      "url": "https://ria.ru/20260128/es-2070876995.html",
+      "source": "ria.ru",
+      "date": "2026-01-28 T2:11",
       "country": "Russia",
       "language": "Russian",
       "summary": "",
