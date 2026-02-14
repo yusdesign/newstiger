@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Guardian News Fetcher - Actually fetches real data
+Guardian News Fetcher - Gets ALL news sections properly
 """
 
 import requests
@@ -23,8 +23,10 @@ class GuardianFetcher:
         # Create directories
         self.output_dir.mkdir(exist_ok=True)
         self.search_dir.mkdir(exist_ok=True)
+        
+        print(f"📁 Output directory: {self.output_dir.absolute()}")
     
-    def fetch_section(self, section, page_size=20):
+    def fetch_section(self, section, page_size=30):
         """Fetch articles from a specific section"""
         url = f"{BASE_URL}/search"
         params = {
@@ -36,7 +38,7 @@ class GuardianFetcher:
             'api-key': self.api_key
         }
         
-        print(f"  📰 Fetching section: {section}")
+        print(f"  📰 Fetching section: {section} (max {page_size} articles)")
         
         try:
             response = requests.get(url, params=params, timeout=15)
@@ -44,13 +46,13 @@ class GuardianFetcher:
                 data = response.json()
                 return self._format_articles(data, section)
             else:
-                print(f"  ⚠️ Error {response.status_code}")
+                print(f"  ⚠️ Error {response.status_code}: {response.text[:100]}")
                 return None
         except Exception as e:
             print(f"  ⚠️ Exception: {e}")
             return None
     
-    def fetch_search(self, query, page_size=20):
+    def fetch_search(self, query, page_size=25):
         """Search for articles by query"""
         url = f"{BASE_URL}/search"
         params = {
@@ -62,7 +64,7 @@ class GuardianFetcher:
             'api-key': self.api_key
         }
         
-        print(f"  🔍 Searching: {query}")
+        print(f"  🔍 Searching: '{query}'")
         
         try:
             response = requests.get(url, params=params, timeout=15)
@@ -70,6 +72,7 @@ class GuardianFetcher:
                 data = response.json()
                 return self._format_articles(data, query)
             else:
+                print(f"  ⚠️ Error {response.status_code}")
                 return None
         except Exception as e:
             print(f"  ⚠️ Exception: {e}")
@@ -90,6 +93,9 @@ class GuardianFetcher:
             body = fields.get('bodyText', '')
             summary = body[:300] + '...' if body else fields.get('trailText', '')
             
+            # Clean HTML from summary
+            summary = summary.replace('<p>', '').replace('</p>', '').replace('<strong>', '').replace('</strong>', '').strip()
+            
             article = {
                 'title': fields.get('headline', result.get('webTitle', 'No title')),
                 'url': result.get('webUrl', '#'),
@@ -98,7 +104,7 @@ class GuardianFetcher:
                 'country': self._section_to_country(result.get('sectionId', '')),
                 'section': result.get('sectionName', 'News'),
                 'section_id': result.get('sectionId', ''),
-                'summary': summary.replace('<p>', '').replace('</p>', '').strip(),
+                'summary': summary,
                 'image': fields.get('thumbnail', ''),
                 'api': 'guardian',
                 'id': result.get('id', '')
@@ -129,7 +135,10 @@ class GuardianFetcher:
             'world/india': 'IN',
             'world/china': 'CN',
             'world/europe-news': 'EU',
-            'world/middleeast': 'ME'
+            'world/middleeast': 'ME',
+            'world/africa': 'AF',
+            'world/americas': 'AM',
+            'world/asia': 'AS'
         }
         return country_map.get(section_id, 'Global')
     
@@ -138,7 +147,7 @@ class GuardianFetcher:
         filepath = self.output_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-        print(f"  💾 Saved: {filename}")
+        print(f"  💾 Saved: {filename} ({data['total']} articles)")
     
     def save_search(self, data, name):
         """Save search results"""
@@ -149,135 +158,138 @@ class GuardianFetcher:
         filepath = self.search_dir / filename
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-        print(f"  💾 Saved search: {filename}")
+        print(f"  💾 Saved search: {filename} ({data['total']} articles)")
     
     def run(self):
         """Main fetch routine"""
-        print(f"\n{'='*60}")
+        print(f"\n{'='*70}")
         print(f"🚀 Fetching Guardian News at {datetime.now()}")
-        print(f"{'='*60}\n")
+        print(f"🔑 API Key: {self.api_key[:5]}...{self.api_key[-5:]}")
+        print(f"{'='*70}\n")
         
-        # 1. RUSSIA NEWS
-        print("\n🇷🇺 Russia News")
-        russia = self.fetch_section('world/russia', 25)
-        if russia:
-            self.save_search(russia, 'russia')
+        all_results = {}
+        
+        # 1. COUNTRY SECTIONS
+        print("\n🌍 PHASE 1: COUNTRY SECTIONS")
+        country_sections = [
+            ('world/russia', 'russia'),
+            ('world/ukraine', 'ukraine'),
+            ('us-news', 'us'),
+            ('uk-news', 'gb'),
+            ('world/germany', 'germany'),
+            ('world/france', 'france'),
+            ('world/japan', 'japan'),
+            ('world/india', 'india'),
+            ('world/china', 'china'),
+            ('australia-news', 'australia'),
+        ]
+        
+        for section, name in country_sections:
+            print(f"\n  📍 {name.upper()}")
+            result = self.fetch_section(section, 25)
+            if result and result['articles']:
+                self.save_search(result, name)
+                all_results[name] = result
+            time.sleep(1)  # Be nice to API
+        
+        # 2. TOPIC SECTIONS
+        print("\n📰 PHASE 2: TOPIC SECTIONS")
+        topic_sections = [
+            'technology',
+            'business',
+            'sport',
+            'science',
+            'environment',
+            'politics',
+            'culture',
+            'lifeandstyle'
+        ]
+        
+        for section in topic_sections:
+            print(f"\n  📌 {section}")
+            result = self.fetch_section(section, 25)
+            if result and result['articles']:
+                self.save_search(result, section)
+                all_results[section] = result
+            time.sleep(1)
+        
+        # 3. POPULAR SEARCHES
+        print("\n🔍 PHASE 3: POPULAR SEARCHES")
+        searches = [
+            'climate change',
+            'artificial intelligence',
+            'covid',
+            'election',
+            'economy',
+            'health',
+            'education'
+        ]
+        
+        for query in searches:
+            print(f"\n  🔎 {query}")
+            result = self.fetch_search(query, 20)
+            if result and result['articles']:
+                name = query.replace(' ', '_')
+                self.save_search(result, name)
+                all_results[name] = result
+            time.sleep(1)
+        
+        # 4. LATEST NEWS (world section for latest)
+        print("\n📰 PHASE 4: LATEST NEWS")
+        latest = self.fetch_section('world', 40)
+        if latest and latest['articles']:
+            self.save_json(latest, 'latest.json')
+            all_results['latest'] = latest
         
         time.sleep(1)
         
-        # 2. UKRAINE NEWS
-        print("\n🇺🇦 Ukraine News")
-        ukraine = self.fetch_section('world/ukraine', 25)
-        if ukraine:
-            self.save_search(ukraine, 'ukraine')
-        
-        time.sleep(1)
-        
-        # 3. US NEWS
-        print("\n🇺🇸 US News")
-        us = self.fetch_section('us-news', 25)
-        if us:
-            self.save_search(us, 'us')
-        
-        time.sleep(1)
-        
-        # 4. UK NEWS
-        print("\n🇬🇧 UK News")
-        uk = self.fetch_section('uk-news', 25)
-        if uk:
-            self.save_search(uk, 'gb')
-        
-        time.sleep(1)
-        
-        # 5. TECHNOLOGY
-        print("\n💻 Technology")
-        tech = self.fetch_section('technology', 25)
-        if tech:
-            self.save_search(tech, 'technology')
-        
-        time.sleep(1)
-        
-        # 6. WORLD NEWS (latest)
-        print("\n🌍 World News")
-        world = self.fetch_section('world', 30)
-        if world:
-            self.save_json(world, 'latest.json')
-        
-        time.sleep(1)
-        
-        # 7. TRENDING (based on most recent)
-        print("\n📈 Trending")
-        if world and world.get('articles'):
+        # 5. TRENDING (based on latest)
+        print("\n📈 PHASE 5: TRENDING")
+        if latest and latest.get('articles'):
             trends = []
-            for i, article in enumerate(world['articles'][:15]):
+            for i, article in enumerate(latest['articles'][:20]):
                 trends.append({
                     'rank': i + 1,
-                    'title': article['title'][:60],
+                    'title': article['title'][:70],
                     'section': article['section'],
-                    'date': article['date'][:10]
+                    'date': article['date'][:10] if article['date'] else '',
+                    'url': article['url']
                 })
             
             trending_data = {
                 'timestamp': datetime.now().isoformat(),
+                'total': len(trends),
                 'trends': trends,
                 'source': 'Guardian'
             }
             self.save_json(trending_data, 'trending.json')
         
-        # 8. POPULAR SEARCHES
-        print("\n🔍 Popular Searches")
-        searches = [
-            'climate change',
-            'artificial intelligence',
-            'business',
-            'sports',
-            'health',
-            'politics'
-        ]
+        # 6. INDEX
+        print("\n📋 PHASE 6: INDEX")
         
-        for query in searches:
-            print(f"\n  {query}")
-            results = self.fetch_search(query, 15)
-            if results:
-                self.save_search(results, query.replace(' ', '_'))
-            time.sleep(1)
+        # Calculate totals
+        total_articles = 0
+        sections_summary = {}
         
-        # 9. INDEX
-        print("\n📋 Creating Index")
-        
-        # Calculate total articles properly
-        total = 0
-        if russia and 'articles' in russia:
-            total += len(russia['articles'])
-        if ukraine and 'articles' in ukraine:
-            total += len(ukraine['articles'])
-        if us and 'articles' in us:
-            total += len(us['articles'])
-        if uk and 'articles' in uk:
-            total += len(uk['articles'])
-        if tech and 'articles' in tech:
-            total += len(tech['articles'])
-        if world and 'articles' in world:
-            total += len(world['articles'])
+        for name, result in all_results.items():
+            count = len(result.get('articles', []))
+            total_articles += count
+            sections_summary[name] = count
         
         index = {
             'last_update': datetime.now().isoformat(),
-            'message': 'Fresh Guardian news',
-            'total_articles': total,
-            'sections': {
-                'russia': len(russia['articles']) if russia and 'articles' in russia else 0,
-                'ukraine': len(ukraine['articles']) if ukraine and 'articles' in ukraine else 0,
-                'us': len(us['articles']) if us and 'articles' in us else 0,
-                'uk': len(uk['articles']) if uk and 'articles' in uk else 0,
-                'technology': len(tech['articles']) if tech and 'articles' in tech else 0,
-                'world': len(world['articles']) if world and 'articles' in world else 0
-            }
+            'total_articles': total_articles,
+            'sections': sections_summary,
+            'files_created': len(all_results),
+            'message': 'Fresh Guardian news'
         }
         self.save_json(index, 'index.json')
         
-        print(f"\n{'='*60}")
-        print(f"✅ Done at {datetime.now()}")
-        print(f"{'='*60}")
+        print(f"\n{'='*70}")
+        print(f"✅ COMPLETE!")
+        print(f"📊 Total articles: {total_articles}")
+        print(f"📁 Files created: {len(all_results)}")
+        print(f"{'='*70}")
 
 if __name__ == "__main__":
     fetcher = GuardianFetcher()
