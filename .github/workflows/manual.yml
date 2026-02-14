@@ -25,11 +25,6 @@ jobs:
       contents: write
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      
       - name: Verify confirmation
         run: |
           if [[ "${{ github.event.inputs.confirm }}" != "YES" ]]; then
@@ -38,56 +33,81 @@ jobs:
           fi
           echo "✅ Confirmation received"
       
-      - name: Show current directory structure
-        run: |
-          echo "📁 Current news directory structure:"
-          ls -la news/ || echo "news/ directory doesn't exist yet"
-          echo ""
-          echo "📁 Search subdirectory:"
-          ls -la news/search/ || echo "news/search/ doesn't exist yet"
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Clean news/search folder
+      - name: Show current files before cleanup
+        run: |
+          echo "📁 Files in news/ BEFORE cleanup:"
+          ls -la news/ || echo "news/ directory doesn't exist"
+          echo ""
+          echo "📁 Files in news/search/ BEFORE cleanup:"
+          ls -la news/search/ || echo "news/search/ doesn't exist"
+          echo ""
+          echo "📊 Total files:"
+          find news -type f 2>/dev/null | wc -l || echo "0"
+      
+      - name: CLEAN - Remove all files from news/search
         if: github.event.inputs.action == 'clean' || github.event.inputs.action == 'clean-and-fetch'
         run: |
           echo "🧹 Cleaning news/search folder..."
           
-          # Create directories if they don't exist
+          # Create directory if it doesn't exist
           mkdir -p news/search
           
           # Count files before deletion
           if [ -d "news/search" ]; then
             file_count=$(find news/search -type f | wc -l)
-            echo "📊 Found $file_count files in news/search"
+            echo "📊 Found $file_count files to delete"
             
-            # Remove all files in search folder
-            rm -rf news/search/*
-            rm -rf news/search/.* 2>/dev/null || true
+            # ACTUALLY DELETE THE FILES
+            rm -vf news/search/*
+            rm -vf news/search/.* 2>/dev/null || true
             
             echo "✅ news/search folder cleaned"
-          else
-            echo "📁 news/search folder doesn't exist, creating it..."
-            mkdir -p news/search
           fi
       
-      - name: Clean all news folders
+      - name: RESET ALL - Complete wipe
         if: github.event.inputs.action == 'reset-all'
         run: |
-          echo "🧹 RESETTING ALL news folders..."
+          echo "🧹 COMPLETE RESET - Removing all news files..."
           
-          # Complete reset - remove and recreate
-          rm -rf news/
+          # Count files before deletion
+          if [ -d "news" ]; then
+            file_count=$(find news -type f | wc -l)
+            echo "📊 Found $file_count files to delete"
+            
+            # ACTUALLY DELETE EVERYTHING
+            rm -rfv news/
+          fi
+          
+          # Create fresh empty structure
           mkdir -p news/search
           
-          # Create empty index file
+          # Create minimal index
           echo '{
             "last_update": "'$(date -Iseconds)'",
             "status": "reset",
-            "message": "News folders have been reset"
+            "message": "News folders have been completely reset"
           }' > news/index.json
           
-          echo "✅ All news folders reset"
+          echo "✅ Complete reset done"
       
-      - name: Fetch fresh news
+      - name: Show files after cleanup
+        run: |
+          echo "📁 Files in news/ AFTER cleanup:"
+          ls -la news/ || echo "news/ directory empty"
+          echo ""
+          echo "📁 Files in news/search/ AFTER cleanup:"
+          ls -la news/search/ || echo "news/search/ empty"
+          echo ""
+          echo "📊 Remaining files:"
+          find news -type f 2>/dev/null | wc -l || echo "0"
+      
+      - name: Fetch fresh news (if requested)
         if: github.event.inputs.action == 'clean-and-fetch'
         run: |
           echo "📰 Fetching fresh news after cleanup..."
@@ -102,32 +122,24 @@ jobs:
           GUARDIAN_API_KEY: ${{ secrets.GUARDIAN_API_KEY }}
           NEWS_API_TOKEN: ${{ secrets.NEWS_API_TOKEN }}
       
-      - name: Show final directory structure
-        run: |
-          echo "📁 Final directory structure:"
-          echo ""
-          echo "news/ directory:"
-          ls -la news/
-          echo ""
-          echo "news/search/ directory:"
-          ls -la news/search/
-          echo ""
-          echo "📊 File counts:"
-          echo "Total in news/: $(find news -type f | wc -l) files"
-          echo "In search/: $(find news/search -type f | wc -l) files"
-      
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          
+          # Show what will be committed
+          echo "📝 Files to commit:"
+          git status --short
           
           git add news/
           
           if ! git diff --quiet && ! git diff --staged --quiet; then
             action_name="${{ github.event.inputs.action }}"
             git commit -m "🧹 Manual cleanup: $action_name [skip ci]"
+            
+            # Force push to make sure it takes
             git pull --rebase origin main
-            git push
+            git push origin main
             echo "✅ Changes committed and pushed"
           else
             echo "ℹ️ No changes to commit"
